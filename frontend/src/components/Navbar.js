@@ -13,9 +13,10 @@ export default function Navbar() {
           className="navbar-logo"
         />
         <div className="navbar-title">
-          <span>Deepfake</span>
-          <br />
-          <span>Hunters</span>
+          <span>
+            Deepfake <br />
+            Hunters
+          </span>
         </div>
       </div>
 
@@ -29,8 +30,8 @@ export default function Navbar() {
         <NavLink to="/detect" className="nav-item">
           Detect
         </NavLink>
-        <NavLink to="/end" className="nav-item">
-          End
+        <NavLink to="/conclusion" className="nav-item">
+          conclusion
         </NavLink>
       </div>
     </nav>
