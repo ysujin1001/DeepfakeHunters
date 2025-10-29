@@ -1,0 +1,37 @@
+version: "3.9"  # docker-compose 버전
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: deepfake_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: deepfake_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      - deepfake_network
+
+  backend:
+    build: .
+    container_name: deepfake_backend
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    volumes:
+      - .:/app
+    command: >
+      sh -c "uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload"
+    networks:
+      - deepfake_network
+
+networks:
+  deepfake_network:
+    driver: bridge

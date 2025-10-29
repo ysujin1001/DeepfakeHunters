@@ -1,0 +1,75 @@
+.home-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #000000, #111111, #000000);
+  color: #ffffff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 0 20px;
+}
+
+.home-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+}
+
+.highlight-blue {
+  color: #3b82f6;
+}
+
+.highlight-red {
+  color: #ef4444;
+}
+
+.home-subtitle {
+  font-size: 1.2rem;
+  color: #cccccc;
+  max-width: 700px;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.home-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.btn {
+  text-decoration: none;
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-generate {
+  background-color: #2563eb;
+  color: white;
+}
+
+.btn-generate:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-detect {
+  background-color: #dc2626;
+  color: white;
+}
+
+.btn-detect:hover {
+  background-color: #b91c1c;
+}
+
+.home-footer {
+  position: absolute;
+  bottom: 20px;
+  font-size: 0.9rem;
+  color: #777;
+}
