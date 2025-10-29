@@ -1,10 +1,57 @@
-// /api/predict 엔드포인트로 이미지를 전송 →
-// 모델이 분석 후 fake_probability, result, image_path 를 반환
+// Path: src/pages/Detect.js
+// Desc: 이미지 업로드 + 동의 체크 + 서버 예측 + 팀원 UI 일부 병합
 
-import React from 'react';
-import '../styles/detect.css';
+import { useState } from "react";
+import "../styles/detect.css";
 
 export default function Detect() {
+  const [image, setImage] = useState(null);
+  const [file, setFile] = useState(null);
+  const [rightsChecked, setRightsChecked] = useState(false);
+  const [disclaimerChecked, setDisclaimerChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+
+  const allChecked = rightsChecked && disclaimerChecked;
+
+  const handleFileChange = (e) => {
+    const selected = e.target.files[0];
+    if (!selected) return;
+    setFile(selected);
+    setImage(URL.createObjectURL(selected));
+    setResult(null);
+  };
+
+  const handleDetect = async () => {
+    if (!file) return alert("파일을 선택하세요!");
+    if (!allChecked) return alert("체크박스에 모두 동의해주세요.");
+
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      // 업로드
+      await fetch(`${process.env.REACT_APP_API_URL}/api/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      // 예측
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/predict`, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      setResult(data);
+    } catch (err) {
+      console.error(err);
+      setResult({ error: "서버 오류 발생" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="detect-container">
       <h1 className="detect-title">
@@ -13,41 +60,79 @@ export default function Detect() {
       </h1>
 
       <div className="detect-main">
-        {/* [1] Upload Section */}
+        {/* [1] 업로드 영역 */}
         <div className="box">
           <h3>Upload Image</h3>
           <div className="content-area">
-            <div className="inner-box">
-              이미지를 Drag & Drop 하거나
-              <br />이 창을 클릭해 주세요
-            </div>
+            <label className="upload-box">
+              <input type="file" accept="image/*" onChange={handleFileChange} />
+              {image ? (
+                <img src={image} alt="preview" className="preview" />
+              ) : (
+                <div className="inner-box">
+                  이미지를 Drag & Drop 하거나 클릭하여 업로드
+                </div>
+              )}
+            </label>
           </div>
+
+          {/* 체크박스 */}
+          <div className="consent-section">
+            <label>
+              <input
+                type="checkbox"
+                checked={rightsChecked}
+                onChange={() => setRightsChecked((prev) => !prev)}
+              />
+              이 이미지는 타인의 초상권 또는 저작권을 침해하지 않습니다.
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={disclaimerChecked}
+                onChange={() => setDisclaimerChecked((prev) => !prev)}
+              />
+              AI 분석 결과는 참고용이며 법적 증거로 사용되지 않음을 이해합니다.
+            </label>
+          </div>
+
           <div className="button-group">
-            <button className="detect-btn">Detect</button>
+            <button
+              className="detect-btn"
+              disabled={!file || !allChecked || loading}
+              onClick={handleDetect}
+            >
+              {loading ? "분석 중..." : "탐지 시작"}
+            </button>
           </div>
         </div>
 
-        {/* [2] Arrow Section */}
+        {/* [2] 화살표 영역 */}
         <div className="arrow-box">
           <img src="/images/arrow.jpg" alt="arrow" />
         </div>
 
-        {/* [3] Result Section */}
+        {/* [3] 결과 영역 */}
         <div className="box">
           <h3>Detection Results</h3>
           <div className="content-area">
-            <div className="result-box">
-              <p className="result-line">
-                - <span className="blue">Confidence:</span> 92% (Fake)
-              </p>
-              <p className="result-line">
-                - <span className="blue">Authenticity Score:</span> 0.14
-              </p>
-            </div>
-          </div>
-          <div className="button-group">
-            <button>Download</button>
-            <button>Redetect</button>
+            {result ? (
+              result.error ? (
+                <p className="error-text">{result.error}</p>
+              ) : (
+                <div className="result-box">
+                  <p className="result-line">
+                    <span className="blue">결과:</span> {result.result}
+                  </p>
+                  <p className="result-line">
+                    <span className="blue">딥페이크 확률:</span>{" "}
+                    {(result.fake_probability * 100).toFixed(1)}%
+                  </p>
+                </div>
+              )
+            ) : (
+              <p className="result-placeholder">아직 분석 결과가 없습니다.</p>
+            )}
           </div>
         </div>
       </div>
