@@ -1,0 +1,14 @@
+.footer {
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #000; /* 홈 배경과 통일 */
+  color: #999;
+  text-align: center;
+  font-size: 0.7rem;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 100; /* ✅ 다른 요소보다 위 */
+}
