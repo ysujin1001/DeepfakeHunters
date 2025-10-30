@@ -6,12 +6,13 @@
   justify-content: flex-start;
 
   width: 100%;
-  min-height: calc(100vh - 100px);
+  min-height: calc(100vh - 120px);
   background-color: black;
   color: #f5f5f5;
   box-sizing: border-box;
-  margin-top: 100px;
-  padding: 20px 60px;
+
+  padding: 5px 80px;
+  margin-top: 60px;
 }
 
 /* [2] 제목 */
@@ -20,39 +21,40 @@
   font-weight: 800;
   color: #fff;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 }
 
 /* [3] 메인 3등분 구조 */
 .detect-main {
-  display: flex; /* ✅ grid 제거 */
-  justify-content: center;
-  align-items: flex-start; /* ✅ 버튼이 잘리지 않도록 위 기준 정렬 */
-  gap: 40px;
+  display: grid;
+  grid-template-columns: 1fr 0.2fr 1fr;
+  align-items: start;
+  justify-items: center;
   width: 100%;
   max-width: 1200px;
+  gap: 20px;
 }
 
 /* [4] 공통 박스 */
-.box {
+.detect-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* ✅ 내부 구성 위쪽부터 차곡차곡 */
-  gap: 16px;
+  justify-content: flex-start;
+  gap: 7px;
   flex: 1;
 }
 
 /* [5] 섹션 제목 */
-.box h3 {
-  font-size: 1.4rem;
-  font-weight: 500;
-  color: #fff;
+.detect-box h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 8px;
 }
 
-/* [6] 이미지 영역 */
-.content-area {
+/* [6] 이미지 영역 (테두리 + 프레임) */
+.detect-content-area {
   width: 420px;
   height: 300px;
   border: 2px solid rgba(255, 255, 255, 0.8);
@@ -61,38 +63,105 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+
+  border-radius: 8px;
+  overflow: hidden; /* ✅ 이미지 넘침 방지 */
+  transition: border-color 0.3s ease;
 }
 
-/* [7] 내부 콘텐츠 (Drag 안내문 & 결과박스) */
-.inner-box {
-  background-color: black;
-  text-align: center;
+/* ✅ 마우스 오버 시 테두리 강조 */
+.detect-content-area:hover {
+  border-color: #f22525;
+}
+
+/* [7] 업로드 가능한 영역 (input 대체) */
+.detect-upload-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* ✅ input은 완전히 숨기기 */
+.detect-upload-box input[type='file'] {
+  display: none;
+}
+
+/* [8] 내부 안내문 */
+.detect-inner-box {
   color: #e5e5e5;
+  font-size: 0.9rem;
+  text-align: center;
+  pointer-events: none;
+  white-space: pre-line;
+  line-height: 1.6;
 }
 
-/* [8] 결과 텍스트 */
-.result-box {
+/* [9] 이미지 미리보기 */
+.preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
+.preview:hover {
+  transform: scale(1.02); /* ✅ 살짝 확대 효과 */
+}
+
+/* [10] 체크박스 섹션 */
+.detect-consent-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1px; /* ✅ 세로 간격 줄이기 */
+  margin-top: 2px;
+  align-items: flex-start; /* ✅ 왼쪽 정렬 */
+}
+
+/* [11] 체크박스 라벨 */
+.detect-checkbox-text {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  line-height: 0.1;
+  color: #f5f5f5;
+  cursor: pointer;
+}
+
+/* [12] 체크박스 input */
+.detect-checkbox-text input {
+  margin-right: 10px;
+  transform: scale(1.2);
+  accent-color: #f22525;
+}
+
+/* [13] 결과 텍스트 */
+.detect-result-box {
   text-align: left;
   color: #e5e5e5;
   line-height: 1.6;
 }
 
-.result-line {
+.detect-result-line {
   font-size: 1rem;
   margin: 5px 0;
 }
 
-/* [9] 버튼 그룹 */
-.button-group {
+/* [14] 버튼 그룹 */
+.detect-button-group {
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-top: 16px; /* ✅ 버튼을 결과박스와 확실히 분리 */
+  margin-top: 7px;
 }
 
-.button-group button {
-  padding: 10px 22px;
-  background-color: #f22525; /* ✅ 검정 배경에 대비되는 파란색 */
+/* [15] 버튼 기본 스타일 */
+.detect-button-group button {
+  padding: 5px 15px;
+  background-color: #f22525;
   border: none;
   border-radius: 4px;
   font-weight: 600;
@@ -101,19 +170,15 @@
   transition: all 0.2s ease;
 }
 
-.button-group button:hover {
-  background-color: #f22525;
-  color: #fff;
-}
-
-/* [10] 화살표 */
-.arrow-box {
+/* [17] 화살표 */
+.detect-arrow-box {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100%;
 }
 
-.arrow-box img {
+.detect-arrow-box img {
   width: 90px;
   height: auto;
   opacity: 0.8;
