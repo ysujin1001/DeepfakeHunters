@@ -1,56 +1,68 @@
+/* 네비게이션 바 : 전체 */
 .navbar {
-  display: flex;
-  align-items: center;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%; /*전체 가로폭 */
+  z-index: 1000; /* 다른 요소 위로 띄움 */
+
+  display: flex; /* 내부 요소 가로 정렬 */
+  align-items: center; /* 세로 가운데 정렬 */
   justify-content: space-between;
   background-color: #ffffff;
-  padding: 10px 40px;
   border-bottom: 2px solid #0f172a;
+  padding: 0px 10px 0px 10px; /* ★ 상 우 하 좌 */
   height: 100px;
-  box-sizing: border-box;
+  box-sizing: border-box; /* ★ 높이 계산 안정화 */
 }
 
-/* 왼쪽 로고 + 제목 */
+/* [좌] 팀: 로고 + 타이틀 */
 .navbar-left {
   display: flex;
-  align-items: center;
-  gap: 20px;
+  align-items: center; /* 팀명 세로 중앙 */
+  gap: 20px; /* 로고~글자 사이 간격 */
 }
 
+/* [좌] 팀: 로고 */
 .navbar-logo {
-  width: 100px;
+  width: 130px;
   height: auto;
-  border-radius: 6px;
-  object-fit: cover;
+  border-radius: 3px;
 }
 
+/* [좌] 팀: 타이틀 */
 .navbar-title {
   font-size: 1.5rem;
-  font-weight: 600;
-  color: #000;
+  font-weight: 900;
+  color: #000000;
   line-height: 1.2;
 }
 
-/* 메뉴 영역 */
+/* [우] 메뉴 : 전체 */
 .navbar-menu {
   display: flex;
-  gap: 50px;
-  font-size: 1.1rem;
-  font-weight: 500;
+  gap: 80px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-right: 40px; /* ★ 오른쪽 끝에 공간 확보 */
 }
 
+/* [우] 메뉴 : 텍스트 */
 .nav-item {
   color: #000;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
+/* [우] 메뉴 : 텍스트(마우스 오버) */
 .nav-item:hover {
   transform: scale(1.05);
   color: #1e40af;
 }
 
-/* 현재 활성화된 메뉴 */
+/* [우] 메뉴 : 텍스트(활성 상태) */
 .nav-item.active {
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 900;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }

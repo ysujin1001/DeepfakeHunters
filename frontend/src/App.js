@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Generate from './pages/Generate';
 import Detect from './pages/Detect';
-import End from './pages/End';
+import Conclusion from './pages/Conclusion';
 import Navbar from './components/Navbar';
 
 export default function App() {
@@ -13,7 +13,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/generate" element={<Generate />} />
         <Route path="/detect" element={<Detect />} />
-        <Route path="/end" element={<End />} />
+        <Route path="/conclusion" element={<Conclusion />} />
       </Routes>
     </BrowserRouter>
   );

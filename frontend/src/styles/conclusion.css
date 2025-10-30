@@ -1,0 +1,47 @@
+/* [1] 전체 컨테이너 */
+.conclusion-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: calc(100vh - 100px); /* 네비게이션 높이 제외 */
+  background-color: #fff;
+  color: #111;
+  text-align: center;
+
+  box-sizing: border-box;
+  padding: 5px 60px 0px 60px;
+  margin-top: 100px; /* 네비게이션 아래 공간 확보 */
+}
+
+/* [2] 서브 타이틀 */
+.conclusion-sub-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+/* [3] 메인 타이틀 */
+.conclusion-main-title {
+  font-size: 3rem;
+  font-weight: 1000;
+  margin-top: 4px;
+  margin-bottom: 40px;
+}
+
+/* [5] 이미지 영역 */
+.conclusion-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.conclusion-image img {
+  width: 320px;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 10px;
+}

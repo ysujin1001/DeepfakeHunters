@@ -1,75 +1,91 @@
+/* home 화면 : 전체 */
 .home-container {
-  min-height: 100vh;
-  background: linear-gradient(to bottom, #000000, #111111, #000000);
-  color: #ffffff;
-  text-align: center;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  padding: 0 20px;
+  justify-content: space-between;
+  align-items: center; /* 수직 가운데 정렬 */
+  width: 100%; /*  화면 너비 전체 */
+  min-height: calc(
+    100vh - 100px
+  ); /* Navbar 높이(100px)를 뺀 높이를 ‘최소값’으로 변경 */
+  padding: 10px 50px; /* 위아래 여백 반영됨 */
+  box-sizing: border-box;
+  background-color: black;
+  color: #f5f5f5;
+  gap: 60px;
+  margin-top: 100px; /* 내용이 네비게이션 아래에서 시작하도록 */
 }
 
+/* [part1. 좌] 텍스트 영역 ] */
+.home-text {
+  flex: 1;
+  max-width: 55%;
+}
+
+/* [part2. 우] 이미지 영역 ] */
+.home-image {
+  flex-shrink: 0;
+}
+
+.home-image img {
+  width: 460px;
+  height: 460px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+/* 타이틀 */
 .home-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
+  font-size: 2.7rem;
+  font-weight: 800;
   line-height: 1.4;
+  margin-bottom: 30px;
+  color: #fff;
 }
 
-.highlight-blue {
+/* 타이틀: 강조 색상 */
+.blue {
   color: #3b82f6;
 }
 
-.highlight-red {
+.red {
   color: #ef4444;
 }
 
-.home-subtitle {
-  font-size: 1.2rem;
-  color: #cccccc;
-  max-width: 700px;
-  margin-bottom: 2.5rem;
-  line-height: 1.6;
+.highlight {
+  color: #eb5e5e;
+  font-weight: 600;
 }
 
-.home-buttons {
+/* 섹션 : 1,2,3 통일 */
+.home-section {
   display: flex;
-  gap: 1.5rem;
-  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 12px; /* 섹션간 세로폭 */
 }
 
-.btn {
-  text-decoration: none;
-  padding: 12px 32px;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.btn-generate {
-  background-color: #2563eb;
-  color: white;
-}
-
-.btn-generate:hover {
+/* 섹션 : 아이콘(번호) */
+.section-number {
   background-color: #1d4ed8;
-}
-
-.btn-detect {
-  background-color: #dc2626;
-  color: white;
-}
-
-.btn-detect:hover {
-  background-color: #b91c1c;
-}
-
-.home-footer {
-  position: absolute;
-  bottom: 20px;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 3px 7px;
   font-size: 0.9rem;
-  color: #777;
+}
+
+/* 섹션 : 제목 */
+.section-title {
+  margin: 0 0 1dvb 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* 섹션 : 내용 */
+.home-section p {
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: #e5e5e5;
 }
