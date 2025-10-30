@@ -12,7 +12,7 @@
   background-color: #ffffff;
   border-bottom: 2px solid #0f172a;
   padding: 0px 10px 0px 10px; /* ★ 상 우 하 좌 */
-  height: 100px;
+  height: 75px;
   box-sizing: border-box; /* ★ 높이 계산 안정화 */
 }
 
@@ -25,7 +25,7 @@
 
 /* [좌] 팀: 로고 */
 .navbar-logo {
-  width: 130px;
+  width: 100px;
   height: auto;
   border-radius: 3px;
 }
@@ -34,8 +34,36 @@
 .navbar-title {
   font-size: 1.5rem;
   font-weight: 900;
-  color: #000000;
+  color: black;
   line-height: 1.2;
+}
+
+/* ✅ 강조용 텍스트 */
+.special-text {
+  color: red; /* 붉은색 */
+  font-size: 3rem; /* 나머지의 약 2배 크기 */
+  font-weight: 1000;
+  letter-spacing: 1px;
+  /* 🔥 강한 붉은 빛 그림자 (살짝 네온 느낌) */
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.6), 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* ✅ fade 애니메이션 */
+.fade-text {
+  display: inline-block;
+  opacity: 1;
+  transition: opacity 0.8s ease-in-out, transform 0.3s ease-in-out;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25),
+    /* 기본 그림자 */ 0 0 6px rgba(0, 0, 0, 0.2); /* 부드러운 외곽 */
+}
+
+.fade-in {
+  opacity: 1;
+}
+
+.fade-out {
+  opacity: 0;
 }
 
 /* [우] 메뉴 : 전체 */

@@ -1,6 +1,29 @@
+import { useState, useEffect } from 'react';
 import '../styles/conclusion.css';
 
 export default function Conclusion() {
+  const [showOriginal, setShowOriginal] = useState(true);
+
+  useEffect(() => {
+    let switchTimeout;
+
+    const cycle = () => {
+      // ✅ 1️⃣ 원본 이미지 표시
+      setShowOriginal(true);
+      switchTimeout = setTimeout(() => {
+        // ✅ 2️⃣ 반전 이미지 즉시 전환
+        setShowOriginal(false);
+      }, 2000);
+    };
+
+    cycle();
+    const interval = setInterval(cycle, 5000); // 총 주기: 3 + 1초 = 4초
+    return () => {
+      clearInterval(interval);
+      clearTimeout(switchTimeout);
+    };
+  }, []);
+
   return (
     <div className="conclusion-container">
       <h1 className="conclusion-sub-title">
@@ -12,9 +35,15 @@ export default function Conclusion() {
       </h1>
 
       <div className="conclusion-image">
-        <img src="/images/watching.jpg" alt="Looking Ahead" />
+        <img
+          src={
+            showOriginal
+              ? '/images/watching.jpg'
+              : '/images/watching_reverse.png'
+          }
+          alt="Looking Ahead"
+        />
       </div>
-      <p className="credit">© 2025 Deepfake Hunters</p>
     </div>
   );
 }
