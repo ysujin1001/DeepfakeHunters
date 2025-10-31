@@ -21,7 +21,7 @@
   font-weight: 800;
   color: #fff;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 /* [3] 메인 3등분 구조 */
@@ -119,6 +119,10 @@
   gap: 1px; /* ✅ 세로 간격 줄이기 */
   margin-top: 2px;
   align-items: flex-start; /* ✅ 왼쪽 정렬 */
+
+  width: 420px;
+  text-align: left;
+  margin-left: 0;
 }
 
 /* [11] 체크박스 라벨 */
@@ -126,7 +130,8 @@
   display: flex;
   align-items: center;
   font-size: 0.85rem;
-  line-height: 0.1;
+  line-height: 0.5;
+  margin-bottom: 1px;
   color: #f5f5f5;
   cursor: pointer;
 }
@@ -136,6 +141,12 @@
   margin-right: 10px;
   transform: scale(1.2);
   accent-color: #f22525;
+}
+
+/* ✅ 내부 p 기본 여백 제거 */
+.detect-checkbox-text p {
+  margin: 0; /* ✅ 브라우저 기본 16px 여백 제거 */
+  padding: 0;
 }
 
 /* [13] 결과 텍스트 */
