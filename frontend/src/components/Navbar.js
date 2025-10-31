@@ -58,18 +58,22 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* ✅ 메뉴 hover 시 한글 설명 추가 */}
       <div className="navbar-menu">
         <NavLink to="/" className="nav-item">
           Home
+          <span className="nav-tooltip">홈</span>
         </NavLink>
         <NavLink to="/generate" className="nav-item">
           Generate
+          <span className="nav-tooltip">이미지 생성</span>
         </NavLink>
         <NavLink to="/detect" className="nav-item">
-          Detect
+          Detect<span className="nav-tooltip">딥페이크 판별</span>
         </NavLink>
         <NavLink to="/conclusion" className="nav-item">
           Conclusion
+          <span className="nav-tooltip">엔딩까지 완벽한 서비스!</span>
         </NavLink>
       </div>
     </nav>
