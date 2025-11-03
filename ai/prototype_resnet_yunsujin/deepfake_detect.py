@@ -1,3 +1,6 @@
+# Path: ai/prototype_resnet_yunsujin/deepfake_detect.py
+# Desc: Real/Fake 이미지를 분류하기 위한 ResNet18 모델 생성
+
 import os
 import shutil
 import random

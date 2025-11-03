@@ -1,3 +1,5 @@
+# Path: ai/prototype_resnet_yunsujin/deepfake_test_edited.py
+# Desc: 생성한 변형 이미지(Edited)에 대해 학습된 모델을 활용해 Real/Fake 예측
 import os
 import torch
 from torchvision import models, transforms
@@ -5,7 +7,7 @@ from PIL import Image
 from tqdm import tqdm
 
 # ==================================================
-# 1️⃣ 경로 설정
+# 1️⃣ 경로 설정 (! 각자 데이터셋 있는 곳으로 변경해야 함 !)
 # ==================================================
 model_path = r"E:\yun\DeepfakeHunters\ai\prototype_resnet_yunsujin\output\model_resnet_best.pth"
 test_dir = r"E:\yun\251027_DeepfakeTest\dataset\Dataset\Test\Edited"
