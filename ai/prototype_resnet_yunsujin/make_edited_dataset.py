@@ -1,3 +1,6 @@
+# Path: ai/prototype_resnet_yunsujin/make_edited_dataset.py
+# Desc: Real 이미지를 인위적으로 변형하여 Edited 데이터셋을 생성
+
 import os
 import cv2
 import numpy as np
