@@ -57,8 +57,8 @@ export default function Detect() {
   return (
     <div className="detect-container">
       <h1 className="detect-title">
-        진실을 확인하세요 – AI가 이미지 <span className="red">진위 여부</span>를
-        분석합니다
+        이 이미지는 진짜일까요? – AI는 픽셀 단위로{' '}
+        <span className="red"> 진실을 추적</span>합니다
       </h1>
 
       <div className="detect-main">

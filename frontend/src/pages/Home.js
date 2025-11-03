@@ -42,21 +42,24 @@ export default function Home() {
       {/* 왼쪽 텍스트 영역 */}
       <div className="home-text">
         <h1 className="home-title">
-          AI는 세상을 <span className="blue">창조</span>하는 손이자,
+          AI는 <span className="red">거짓</span>을 드러내고,
           <br />
-          <span className="red">진실</span>을 지키는{' '}
-          <span className="yellow">눈</span>입니다
+          <span className="blue">진실</span>을 되살리는{' '}
+          <span className="yellow">기술</span>입니다
         </h1>
 
         <div className="home-section">
           <div className="section-number">1</div>
           <div>
-            <h3 className="section-title">창조의 얼굴</h3>
+            <h3 className="section-title">
+              기술의 진화{' '}
+              <span className="section-subtitle">- 거짓을 드러내는 지능</span>
+            </h3>
             <p>
-              AI는{' '}
-              <span className="highlight-blue">상상을 현실로 바꾸는 힘</span>을
-              지녔습니다 <br />
-              얼굴을 만들고, 공간을 재현하며, 아직 존재하지 않는 세상을 그립니다
+              AI는 이미지를 분석하고, 패턴을 읽어내며,{' '}
+              <span className="highlight-red">보이지 않는 조작의 흔적</span>을
+              찾아냅니다 <br />
+              우리는 그 기술로 거짓을 드러내고, 진실의 경계를 지켜냅니다
             </p>
           </div>
         </div>
@@ -64,13 +67,22 @@ export default function Home() {
         <div className="home-section">
           <div className="section-number">2</div>
           <div>
-            <h3 className="section-title">진실의 얼굴</h3>
+            <h3 className="section-title">
+              윤리의 기준{' '}
+              <span className="section-subtitle">- 진실을 되살리는 책임</span>
+            </h3>
             <p>
-              그러나 같은 기술이 진실을 왜곡할 수도 있습니다
+              그러나 기술은 목적이 아니라{' '}
+              <span className="highlight-blue"> 책임의 도구</span>입니다
               <br />
-              우리는 AI가 만든 세계 속에서
-              <span className="highlight-red"> ‘진짜’를 구별하는 눈</span>이
-              되어야 합니다
+              우리는 그 힘을 사용해{' '}
+              <span className="highlight-blue">
+                {' '}
+                사라진 얼굴과 왜곡된 기억을 복원
+              </span>{' '}
+              합니다
+              <br />
+              진실을 왜곡하지 않는 AI, 그것이 우리가 지켜야 할 기준입니다
             </p>
           </div>
         </div>
@@ -78,13 +90,16 @@ export default function Home() {
         <div className="home-section">
           <div className="section-number">3</div>
           <div>
-            <h3 className="section-title">Deepfake Hunters의 약속</h3>
+            <h3 className="section-title">
+              Deepfake Hunters의 약속{' '}
+              <span className="section-subtitle">- 사람을 지켜주는 기술</span>
+            </h3>
             <p>
-              우리는 AI의 창조성을 존중하면서도, 그 안의 윤리를 지켜냅니다
+              우리는 기술이 사람을 속이는 시대에{' '}
+              <span className="highlight-yellow">사람을 지켜주는 AI</span>를
+              만듭니다
               <br />
-              기술이 사람을 속이는 대신,{' '}
-              <span className="highlight-yellow">사람을 보호하도록</span> 만드는
-              것이 우리의 목표입니다
+              Deepfake Hunters — 거짓을 감별하고, 진실을 복원하는 AI
             </p>
           </div>
         </div>
