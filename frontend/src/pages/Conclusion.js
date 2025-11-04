@@ -13,11 +13,11 @@ export default function Conclusion() {
       switchTimeout = setTimeout(() => {
         // ✅ 2️⃣ 반전 이미지 즉시 전환
         setShowOriginal(false);
-      }, 2000);
+      }, 1000);
     };
 
     cycle();
-    const interval = setInterval(cycle, 5000); // 총 주기: 3 + 1초 = 4초
+    const interval = setInterval(cycle, 2000); // 총 주기: 3 + 1초 = 4초
     return () => {
       clearInterval(interval);
       clearTimeout(switchTimeout);
