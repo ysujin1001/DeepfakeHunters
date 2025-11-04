@@ -4,8 +4,8 @@
 import os
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
-from app.services.upload_service import save_file
-from app.services.detect_service import load_model, predict_fake
+from backend.app.services.upload_service import save_file
+from backend.app.services.detect_service import load_model, predict_fake
 
 router = APIRouter()
 
@@ -31,6 +31,10 @@ async def predict_image(file: UploadFile = File(...)):
 
         # 모델 예측 수행
         result = predict_fake(model, temp_path)
+
+        # ✅ 모델 이름, 경로 추가
+        result["model_name"] = model.__class__.__name__
+        result["model_path"] = os.path.abspath("ai/models/mobilenetv3_deepfake_final.pth")
 
         # 로그 출력
         print("📤 [PREDICT RESULT]", result)

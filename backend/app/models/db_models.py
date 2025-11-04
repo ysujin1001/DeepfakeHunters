@@ -3,7 +3,7 @@
 
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from datetime import datetime
-from app.core.database import Base
+from backend.app.core.database import Base
 
 class Upload(Base):
     __tablename__ = "uploads"
