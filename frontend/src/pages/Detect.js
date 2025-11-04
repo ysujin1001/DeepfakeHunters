@@ -14,6 +14,36 @@ export default function Detect() {
 
   const allChecked = rightsChecked && disclaimerChecked;
 
+  // ✅ [추가] PDF 다운로드용 상태 & 핸들러
+  const [reportUrl, setReportUrl] = useState(null);
+
+  const handleDownloadPDF = async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/report`, {
+        method: 'POST',
+      });
+
+      if (!res.ok) throw new Error('PDF 생성 실패');
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      setReportUrl(url);
+
+      // 파일 저장창 자동 열기
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Deepfake_Analysis_Report.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('PDF 생성 오류:', err);
+      alert('PDF 생성 중 문제가 발생했습니다.');
+    }
+  };
+  // ✅ [추가 끝]
+
   // 이미지 업로드
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -127,18 +157,53 @@ export default function Detect() {
                 <p className="detect-error-text">{result.error}</p>
               ) : (
                 <div className="detect-result-box">
-                  <p className="detect-result-line">
-                    <span className="blue">결과:</span> {result.result}
-                  </p>
-                  <p className="detect-result-line">
-                    <span className="blue">딥페이크 확률:</span>{' '}
-                    {(result.fake_probability * 100).toFixed(1)}%
-                  </p>
+                  {/* ✅ Grad-CAM 히트맵 이미지 표시 */}
+                  {result.gradcam && (
+                    <img
+                      src={`data:image/png;base64,${result.gradcam}`}
+                      alt="Grad-CAM heatmap"
+                      className="gradcam-preview"
+                    />
+                  )}
                 </div>
               )
             ) : (
-              <p className="result-placeholder">아직 분석 결과가 없습니다.</p>
+              <p className="result-placeholder">분석 이미지가 나타납니다</p>
             )}
+          </div>
+
+          {/* ✅ 결과요약박스 + PDF 버튼 병렬 배치 */}
+          <div className="result-summary-row">
+            <div
+              className={`result-summary-box ${
+                result && !result.error ? 'active' : ''
+              }`}
+            >
+              {result && !result.error ? (
+                <>
+                  <p className="detect-result-line">
+                    <span className="blue">- 결과 :</span> {result.result}
+                  </p>
+                  <p className="detect-result-line">
+                    <span className="blue">- 딥페이크 확률 :</span>{' '}
+                    {(result.fake_probability * 100).toFixed(1)}%
+                  </p>
+                </>
+              ) : (
+                <p className="detect-result-placeholder">
+                  분석 결과를 확인하세요
+                </p>
+              )}
+            </div>
+
+            <button
+              className="pdf-btn"
+              onClick={handleDownloadPDF}
+              disabled={!result || result.error}
+            >
+              📄 PDF 보고서
+              <br /> 다운로드
+            </button>
           </div>
         </div>
       </div>
