@@ -27,19 +27,23 @@ export default function Conclusion() {
   return (
     <div className="conclusion-container">
       <h1 className="conclusion-sub-title">
-        AI는 세상을 <span className="blue">창조</span>하는 손이자,
-        <span className="red"> 진실</span>을 지키는 눈입니다
+        AI는 이미지를 분석해 <span className="blue">진실을 찾아내고,</span>
+        복원해
+        <span className="red"> 잃어버린 기억을 되살립니다</span>
+        <br />
       </h1>
       <h1 className="conclusion-main-title">
-        우리는 그 눈으로, <span className="red">진짜를 봅니다</span>
+        우린 그 진실이 사람을 해치지 않도록,
+        <br />
+        <span className="yellow">오늘도 조용히 — 지켜보고 있습니다</span>
       </h1>
 
       <div className="conclusion-image">
         <img
           src={
             showOriginal
-              ? '/images/watching.jpg'
-              : '/images/watching_reverse.png'
+              ? '/images/watching_reverse.png'
+              : '/images/watching_color.png'
           }
           alt="Looking Ahead"
         />

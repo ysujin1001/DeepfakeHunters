@@ -64,12 +64,12 @@ export default function Navbar() {
           Home
           <span className="nav-tooltip">홈</span>
         </NavLink>
-        <NavLink to="/generate" className="nav-item">
-          Generate
-          <span className="nav-tooltip">이미지 생성</span>
-        </NavLink>
         <NavLink to="/detect" className="nav-item">
           Detect<span className="nav-tooltip">딥페이크 판별</span>
+        </NavLink>
+        <NavLink to="/restore" className="nav-item">
+          Restore
+          <span className="nav-tooltip">이미지 복원</span>
         </NavLink>
         <NavLink to="/conclusion" className="nav-item">
           Conclusion
