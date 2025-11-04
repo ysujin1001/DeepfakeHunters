@@ -72,8 +72,9 @@ export default function Detect() {
                 <img src={image} alt="preview" className="preview" />
               ) : (
                 <div className="detect-inner-box">
-                  이미지를 Drag & Drop 하거나
-                  <br />이 창을 클릭해 주세요
+                  이 창을 클릭하여
+                  <br />
+                  파일을 첨부해 주세요
                 </div>
               )}
             </label>
