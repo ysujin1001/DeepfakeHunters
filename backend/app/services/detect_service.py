@@ -6,7 +6,7 @@ import time
 
 # ✅ 1. 모델 로드 함수 (실제 모델 로드 전 단계)
 def load_model():
-    print("✅ [INFO] 딥페이크 탐지 모델 로드 완료 (현재는 더미 모드)")
+    #print("✅ [INFO] 딥페이크 탐지 모델 로드 완료 (현재는 더미 모드)")
     # 실제로는 예: model = torch.load("data/models/detector.pt")
     return "dummy_model"
 
