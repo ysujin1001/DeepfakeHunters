@@ -2,8 +2,8 @@
 # Desc: 이미지 업로드 / 삭제 / 목록 조회 (DB 기록 + soft delete 로그)
 
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from app.core.database import SessionLocal
-from app.models.db_models import Upload
+from backend.app.core.database import SessionLocal
+from backend.app.models.db_models import Upload
 from datetime import datetime
 import os, shutil, uuid
 
