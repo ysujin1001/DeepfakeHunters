@@ -1,7 +1,6 @@
 // Path: src/pages/Restore.js
-// Desc: 이미지 업로드 + 윤리 동의 + AI 생성 요청 페이지 (Detect 스타일 반영)
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import '../styles/restore.css';
 
 export default function Restore() {
@@ -11,8 +10,10 @@ export default function Restore() {
   const [reLoading, setReLoading] = useState(false);
   const [ethicsChecked, setEthicsChecked] = useState(false);
 
+  const fileInputRef = useRef(null);
   const allChecked = ethicsChecked;
 
+  // ✅ 파일 변경 핸들러
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
     if (!selected) return;
@@ -21,6 +22,12 @@ export default function Restore() {
     setReResult(null);
   };
 
+  // ✅ 버튼 클릭 → 파일 선택창 열기
+  const handleUploadClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  // ✅ 복원 요청
   const handleRestore = async () => {
     if (!reFile) return alert('파일을 선택하세요!');
     if (!allChecked) return alert('체크박스에 동의해주세요.');
@@ -54,19 +61,31 @@ export default function Restore() {
         {/* [1️⃣ 업로드 영역] */}
         <div className="restore-box">
           <h3>Upload Image</h3>
+
           <div className="restore-content-area">
-            <label className="restore-upload-box">
-              <input type="file" accept="image/*" onChange={handleFileChange} />
-              {reImage ? (
-                <img src={reImage} alt="preview" className="preview" />
-              ) : (
-                <div className="restore-inner-box">
-                  이 창을 클릭하여
-                  <br />
-                  파일을 첨부해 주세요
-                </div>
-              )}
-            </label>
+            {/* ✅ 수정된 부분 시작 */}
+            {reImage ? (
+              <img src={reImage} alt="preview" className="preview" />
+            ) : (
+              <div className="restore-inner-box">
+                <p className="upload-guide">복원할 얼굴 이미지를 첨부하세요</p>
+                <button
+                  className="restore-upload-btn"
+                  onClick={handleUploadClick}
+                >
+                  이미지 파일 첨부
+                </button>
+                {/* 숨겨진 input */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
+              </div>
+            )}
+            {/* ✅ 수정된 부분 끝 */}
           </div>
 
           {/* 체크박스 */}
@@ -117,9 +136,7 @@ export default function Restore() {
                 </div>
               )
             ) : (
-              <p className="result-placeholder">
-                아직 생성된 이미지가 없습니다.
-              </p>
+              <p className="result-placeholder">복원 이미지가 나타납니다</p>
             )}
           </div>
         </div>

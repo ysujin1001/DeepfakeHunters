@@ -40,12 +40,12 @@
 
 /* ✅ 강조용 텍스트 */
 .special-text {
-  color: red; /* 붉은색 */
+  color: #122a95;
   font-size: 3rem; /* 나머지의 약 2배 크기 */
   font-weight: 1000;
   letter-spacing: 5px;
   /* 🔥 강한 붉은 빛 그림자 (살짝 네온 느낌) */
-  text-shadow: 0 0 8px rgba(239, 68, 68, 0.6), 2px 2px 6px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 0 8px rgba(72, 121, 218, 0.6), 2px 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 /* ✅ fade 애니메이션 */
