@@ -96,10 +96,7 @@ export default function Restore() {
                 checked={ethicsChecked}
                 onChange={() => setEthicsChecked((prev) => !prev)}
               />
-              <p>
-                AI로 생성된 이미지를 타인비방, 범죄, 허위정보 생성 등 목적으로
-                사용하지 않겠습니다
-              </p>
+              <p>AI 이미지로 타인 비방·범죄·허위정보를 생성하지 않겠습니다</p>
             </label>
           </div>
 
@@ -136,7 +133,9 @@ export default function Restore() {
                 </div>
               )
             ) : (
-              <p className="result-placeholder">복원 이미지가 나타납니다</p>
+              <p className="resore-result-placeholder">
+                복원 이미지가 나타납니다
+              </p>
             )}
           </div>
         </div>

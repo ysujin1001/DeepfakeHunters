@@ -21,7 +21,7 @@
   font-weight: 800;
   color: #fff;
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
 
 /* [3] 메인 3등분 구조 */
@@ -47,7 +47,7 @@
 
 /* [5] 섹션 제목 */
 .detect-box h3 {
-  font-size: 1.2rem;
+  font-size: 1.9rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 8px;
@@ -55,8 +55,8 @@
 
 /* [6] 이미지 영역 (테두리 + 프레임) */
 .detect-content-area {
-  width: 420px;
-  height: 300px;
+  width: 500px;
+  height: 400px;
   border: 2px solid rgba(255, 255, 255, 0.8);
   background-color: black;
   display: flex;
@@ -87,7 +87,7 @@
 /* [8] 내부 안내문 */
 .detect-inner-box {
   color: #e5e5e5;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   text-align: center;
   pointer-events: none;
   white-space: pre-line;
@@ -123,7 +123,7 @@
   gap: 1px;
   margin-top: 2px;
   align-items: flex-start;
-  width: 420px;
+  width: 500px;
   text-align: left;
   margin-left: 0;
 }
@@ -132,7 +132,7 @@
 .detect-checkbox-text {
   display: flex;
   align-items: center;
-  font-size: 0.85rem;
+  font-size: 1rem;
   line-height: 0.5;
   margin-bottom: 1px;
   color: #f5f5f5;
@@ -174,10 +174,11 @@
 
 /* [15] 버튼 기본 스타일 */
 .detect-button-group button {
-  padding: 5px 15px;
+  padding: 8px 20px;
   background-color: #f22525;
   border: none;
   border-radius: 4px;
+  font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
   color: #fff;
@@ -206,7 +207,7 @@
 .gradcam-preview {
   width: 100%;
   height: auto;
-  max-height: 300px;
+  max-height: 400px;
   object-fit: contain;
   border-radius: 6px;
   margin-bottom: 10px;
@@ -250,21 +251,21 @@
 
 /* 분석 전 기본 텍스트 */
 .detect-result-placeholder {
-  font-size: 0.95rem;
+  font-size: 1.3rem;
   color: #fff;
   text-align: center;
 }
 
 /* 결과 텍스트 크기 */
 .result-summary-box .detect-result-line {
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   font-weight: 600;
   margin: 2px 0;
   color: red;
 }
 
 .result-summary-box .blue {
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   font-weight: 400;
   color: #fff;
 }
@@ -298,28 +299,27 @@
 
 /* [NEW] 업로드 영역 내부 분석대상 선택용 작은 박스 */
 .detect-model-box {
-  /* border: 1px solid rgba(255, 255, 255, 0.5); */
-  /* border-radius: 6px; */
-  padding: 5px;
-  margin-bottom: 20px;
-  width: 60%;
-  background-color: rgba(255, 255, 255, 0.05);
+  /* padding: 0px; */
+  margin-bottom: 30px;
+  width: 80%;
+  background-color: black;
 }
 
 .model-select-title {
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1.3rem;
+  font-weight: 400;
   text-align: left;
-  margin-left: 20px;
-  color: #f5f5f5;
+  margin-left: 30px;
+  color: #eec2c2;
   margin-bottom: 6px;
 }
 
 .detect-model-select {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  font-size: 0.85rem;
+  gap: 25px;
+  font-size: 1.5rem;
+  font-weight: 500;
   color: #f5f5f5;
 }
 
@@ -334,6 +334,7 @@
 .detect-upload-btn {
   background-color: #f22525;
   color: #fff;
+  font-size: 1.2rem;
   font-weight: 600;
   border: none;
   border-radius: 6px;
