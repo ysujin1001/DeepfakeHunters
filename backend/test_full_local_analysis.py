@@ -42,8 +42,8 @@ except Exception as e:
 # ==========================================================
 image_path = os.path.join(
     PROJECT_ROOT,
-    "frontend",
-    "public",
+    "backend",
+    "data",
     "test_images",
     "detect",
     "test2.jpg"
