@@ -11,8 +11,8 @@
   color: #f5f5f5;
   box-sizing: border-box;
 
-  padding: 5px 80px;
-  margin-top: 60px;
+  padding: 150px 80px 50px 80px; /* Navbar 높이 + 내부 여백 */
+  margin: 0; /* flex 충돌 방지 */
 }
 
 /* [2] 제목 */

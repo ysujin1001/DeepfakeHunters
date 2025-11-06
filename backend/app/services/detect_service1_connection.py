@@ -39,9 +39,9 @@ def predict_fake(image_path: str, model_type: str = "korean") -> dict:
     try:
         # ✅ 1️⃣ Grad-CAM 분석 실행 (option 파일 내부 함수)
         pred_label, confidence, report = analyze_image_with_model_type(
-            path=image_path,
+            image_path=image_path,
             model_type=model_type,
-            visualize=False
+            visualize=False  # matplotlib 창 띄우지 않음
         )
 
         # ✅ 2️⃣ Grad-CAM 오버레이 이미지 → base64로 변환
@@ -50,20 +50,14 @@ def predict_fake(image_path: str, model_type: str = "korean") -> dict:
         image.save(buf, format="PNG")
         gradcam_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
 
-        # ✅ 3️⃣ 결과 딕셔너리 생성
-        result = {
+        # ✅ 3️⃣ 결과 반환
+        return {
             "pred_label": pred_label,
             "confidence": round(confidence, 2),
             "report": report,
             "gradcam": gradcam_b64,
             "image_path": image_path
         }
-
-        # ✅ 4️⃣ 콘솔 출력 시 gradcam은 제외 (base64 너무 길어서)
-        log_result = {k: v for k, v in result.items() if k != "gradcam"}
-        print("🔍 예측 결과:", log_result)
-
-        return result
 
     except Exception as e:
         print(f"❌ [PREDICT ERROR]: {e}")

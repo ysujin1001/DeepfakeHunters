@@ -67,9 +67,11 @@ async def predict_image(
         result = predict_fake(str(save_path), model_type=model_type)
         result["model_type"] = model_type
 
-        # ✅ 결과 로그 출력
-        print(f"📤 [PREDICT RESULT] {result}")
+        # ✅ 결과 로그 출력 (gradcam 제외)
+        log_result = {k: v for k, v in result.items() if k != "gradcam"}
+        print(f"📤 [PREDICT RESULT] {log_result}")
 
+        # ✅ 결과 반환
         return JSONResponse(status_code=200, content=result)
 
     except Exception as e:
