@@ -9,15 +9,23 @@ from datetime import datetime, timedelta
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from backend.app.core.database import Base, engine, SessionLocal
-from backend.app.models.db_models import Upload
-from fastapi.staticfiles import StaticFiles 
+from fastapi.staticfiles import StaticFiles
+
+# ✅ .env 로드 추가
+from dotenv import load_dotenv
+import os
+
+# ------------------------------------------------------
+# 0️⃣ 환경 변수 로드 (.env)
+# ------------------------------------------------------
+load_dotenv()
+print("✅ DATABASE_URL:", os.getenv("DATABASE_URL"))
 
 # ✅ 내부 모듈
+from backend.app.core.database import Base, engine, SessionLocal
+from backend.app.models.db_models import Upload
 from ai.modules.predictor import DeepfakePredictor
 from ai.modules.restorer import FaceRestorer
-
-# ✅ 라우터
 from backend.app.api.routes_upload import router as upload_router
 from backend.app.api.routes_detect import router as detect_router
 
@@ -52,6 +60,7 @@ app.include_router(detect_router, prefix="/api")
 # ✅ 정적 파일 (복원 이미지 접근 허용)
 # ======================================================
 app.mount("/data", StaticFiles(directory="data"), name="data")
+
 # ======================================================
 # 5️⃣ 모델 로드
 # ======================================================
@@ -83,6 +92,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 # 7️⃣ 자동 정리 태스크
 # ======================================================
 async def cleanup_deleted_uploads():
+    """30일 이상 지난 삭제된 업로드 데이터를 주기적으로 정리"""
     while True:
         db = SessionLocal()
         try:

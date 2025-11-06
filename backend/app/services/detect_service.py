@@ -36,6 +36,7 @@ except Exception as e:
 # ✅ 3. 모델 선택 함수
 # ==========================================================
 def load_model(model_type: str = "korean"):
+    """모델 타입(korean/foreign)에 따라 해당 predictor 반환"""
     if model_type == "foreign":
         return predictor_foreign
     return predictor_korean
@@ -45,6 +46,14 @@ def load_model(model_type: str = "korean"):
 # ✅ 4. 예측 함수
 # ==========================================================
 def predict_fake(image_path: str, model_type: str = "korean") -> dict:
+    """
+    딥페이크 예측 함수
+    Args:
+        image_path (str): 예측할 이미지 경로
+        model_type (str): 'korean' 또는 'foreign'
+    Returns:
+        dict: 예측 결과 딕셔너리
+    """
     predictor = load_model(model_type)
     if predictor is None:
         return {"error": f"{model_type} 모델이 로드되지 않았습니다."}
@@ -65,10 +74,12 @@ def predict_fake(image_path: str, model_type: str = "korean") -> dict:
         image.save(buf, format="PNG")
         gradcam_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
 
+    # 결과 반환
     return {
         "pred_label": "Fake" if prob >= 0.5 else "Real",
         "confidence": round(prob * 100, 2),
         "fake_probability": round(prob, 4),
         "gradcam": gradcam_b64,
         "result": result,
+        "image_path": image_path,  # ✅ 실제 파일 경로 추가
     }
