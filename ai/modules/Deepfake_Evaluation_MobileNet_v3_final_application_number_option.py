@@ -1,103 +1,118 @@
 # Path: ai/modules/Deepfake_Evaluation_MobileNet_v3_final_application_number_option.py
-# Desc: Grad-CAM 기반 딥페이크 분석 (상대경로 자동 인식)
+# Desc: MobileNetV3 기반 딥페이크 탐지 + Grad-CAM 시각화 (개선 버전)
 
-import torch, torch.nn as nn
-from torchvision import models, transforms
+import torch
+import torch.nn.functional as F
+from torchvision import transforms, models
 from PIL import Image
-import numpy as np, cv2, matplotlib.pyplot as plt
-from pathlib import Path
+import numpy as np
+import matplotlib.pyplot as plt
+import cv2
+import os
+from datetime import datetime
 
-# 기본 경로 설정
-BASE_DIR = Path(__file__).resolve().parents[1]  # ai/
-MODEL_DIR = BASE_DIR / "models"                 # ai/models/
-print(f"🧠 [MODEL_DIR] {MODEL_DIR}")
 
-# Grad-CAM 클래스
-class GradCAM:
-    def __init__(self, model, target_layer):
-        self.model, self.target_layer = model, target_layer
-        self.gradients = self.activations = None
-        self.target_layer.register_forward_hook(lambda m, i, o: setattr(self, "activations", o.detach()))
-        self.target_layer.register_backward_hook(lambda m, gi, go: setattr(self, "gradients", go[0].detach()))
-    def generate(self, x, idx):
-        out = self.model(x); self.model.zero_grad(); out[0, idx].backward()
-        g, a = self.gradients.cpu().numpy()[0], self.activations.cpu().numpy()[0]
-        w = np.mean(g, axis=(1, 2)); cam = np.maximum(np.sum(w[:, None, None] * a, 0), 0)
-        return cam / (np.max(cam) + 1e-8)
+# ==========================================================
+# ✅ Grad-CAM 생성 함수
+# ==========================================================
+def generate_gradcam(model, image_tensor, target_layer):
+    grads = []
+    activations = []
 
-# 이미지 로드
-def load_image(path, size=224):
-    img = Image.open(path).convert("RGB")
-    t = transforms.Compose([
-        transforms.Resize((size, size)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485,0.456,0.406], std=[0.229,0.224,0.225])
-    ])
-    return img, t(img).unsqueeze(0)
+    def backward_hook(module, grad_in, grad_out):
+        grads.append(grad_out[0])
 
-# 숫자 오버레이
-def generate_number_layer(cam, shape, grid=8):
-    layer = np.zeros((shape[0], shape[1], 3), np.uint8)
-    cam_r = cv2.resize(cam, (shape[1], shape[0]))
-    h, w = cam_r.shape; sh, sw = h // grid, w // grid; fs = 0.5 * (sh / 20)
-    for i in range(grid):
-        for j in range(grid):
-            y, x = i*sh+sh//2, j*sw+sw//2
-            n = int(np.clip(cam_r[y,x]*9, 0, 9))
-            cv2.putText(layer, str(n), (x-sw//4, y+sh//4),
-                        cv2.FONT_HERSHEY_SIMPLEX, fs, (255,255,255), 1, cv2.LINE_AA)
-    return layer
+    def forward_hook(module, input, output):
+        activations.append(output)
 
-def overlay_cam_on_image(img, cam):
-    img = np.array(img).astype(np.uint8)
-    cam_r = cv2.resize(cam, (img.shape[1], img.shape[0]))
-    heat = cv2.applyColorMap(np.uint8(255*cam_r), cv2.COLORMAP_JET)
-    return cv2.addWeighted(img, 0.6, cv2.cvtColor(heat, cv2.COLOR_BGR2RGB), 0.4, 0)
+    target_layer.register_forward_hook(forward_hook)
+    target_layer.register_backward_hook(backward_hook)
 
-def generate_integrated_report(label, conf):
-    if label == "Real":
-        return (f"이 이미지는 Real ({conf:.2f}%)\n"
-                f"자연스러운 질감, 조명, 윤곽선 패턴이 실제 얼굴의 특징으로 인식되었습니다.")
-    return (f"이 이미지는 Fake ({conf:.2f}%)\n"
-            f"비정상적인 질감, 경계선 왜곡, 조명 불균형 등 딥페이크 흔적이 감지되었습니다.")
+    output = model(image_tensor)
+    pred_class = output.argmax(dim=1)
+    model.zero_grad()
+    class_loss = output[0, pred_class]
+    class_loss.backward()
 
+    grad = grads[0].cpu().data.numpy()[0]
+    activation = activations[0].cpu().data.numpy()[0]
+    weights = np.mean(grad, axis=(1, 2))
+
+    cam = np.zeros(activation.shape[1:], dtype=np.float32)
+    for i, w in enumerate(weights):
+        cam += w * activation[i, :, :]
+
+    cam = np.maximum(cam, 0)
+    cam = cv2.resize(cam, (224, 224))
+    cam -= np.min(cam)
+    cam /= np.max(cam) if np.max(cam) != 0 else 1
+    return cam
+
+
+# ==========================================================
+# ✅ 메인 분석 함수
+# ==========================================================
 def analyze_image_with_model_type(path, model_type="korean", visualize=True):
-    model_paths = {
-        "korean": str(MODEL_DIR / "mobilenetv3_deepfake_final.pth"),
-        "foriegn": str(MODEL_DIR / "mobilenetv3_deepfake_final_foriegn2.pth")
-    }
-    if model_type not in model_paths:
-        raise ValueError("model_type은 'korean' 또는 'foriegn'만 가능합니다.")
-    model_path = model_paths[model_type]
-    print(f"✅ 선택된 모델: {model_type} ({model_path})")
+    """
+    이미지 경로를 받아 딥페이크 예측 + Grad-CAM 시각화 수행
+    visualize=True일 경우 Grad-CAM 이미지를 저장하고 경로 반환
+    """
 
-    model = models.mobilenet_v3_small(weights=None)
-    f = model.classifier[3].in_features
-    model.classifier[3] = nn.Linear(f, 2)
-    model.load_state_dict(torch.load(model_path, map_location="cpu"), strict=False)
+    model_path = f"ai/models/mobilenetv3_deepfake_final.pth"
+    model = models.mobilenet_v3_small(pretrained=False)
+    model.classifier[3] = torch.nn.Linear(1024, 2)
+    model.load_state_dict(torch.load(model_path, map_location="cpu"))
     model.eval()
 
-    img, x = load_image(path)
+    transform = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+    ])
+
+    image = Image.open(path).convert("RGB")
+    input_tensor = transform(image).unsqueeze(0)
+
     with torch.no_grad():
-        out = model(x); probs = torch.softmax(out, 1)[0]
-        idx = torch.argmax(probs).item()
-        conf = probs[idx].item()*100
-        label = ["Fake","Real"][idx]
+        output = model(input_tensor)
+        confidence = F.softmax(output, dim=1)[0]
+        pred_label = "Fake" if torch.argmax(confidence).item() == 1 else "Real"
+        conf_value = confidence[1].item() * 100
 
-    cam = GradCAM(model, model.features[-1]).generate(x, idx)
-    overlay = overlay_cam_on_image(img, cam)
-    number_layer = generate_number_layer(cam, np.array(img).shape)
-    report = generate_integrated_report(label, conf)
-
+    # ✅ Grad-CAM 생성
+    gradcam_path = None
+    fake_intensity = None
     if visualize:
-        plt.figure(figsize=(18,6))
-        plt.subplot(1,3,1); plt.imshow(img); plt.title("원본"); plt.axis("off")
-        plt.subplot(1,3,2); plt.imshow(cv2.addWeighted(overlay,0.8,number_layer,0.8,0)); plt.title("Grad-CAM"); plt.axis("off")
-        plt.subplot(1,3,3); plt.axis("off"); plt.text(0,0.5,report,fontsize=12,wrap=True)
-        plt.tight_layout(); plt.show()
+        cam = generate_gradcam(model, input_tensor, model.features[-1])
+        heatmap = cv2.applyColorMap(np.uint8(255 * cam), cv2.COLORMAP_JET)
+        img = np.array(image.resize((224, 224)))
 
-    return label, conf, report
+        # ✅ 붉은색 퍼짐 개선 — threshold 마스크 적용
+        threshold = 0.4
+        mask = cam > threshold
+        overlay = img.copy()
+        overlay[mask] = np.uint8(0.7 * heatmap[mask] + 0.3 * img[mask])
 
-if __name__ == "__main__":
-    test_img = str(BASE_DIR.parent / "backend" / "data" / "test_images" / "test5.jpg")
-    analyze_image_with_model_type(test_img, "korean")
+        # ✅ 시각적 활성도 계산 (Grad-CAM 평균 강도)
+        fake_intensity = float(np.mean(cam))
+
+        # ✅ 저장
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        save_dir = os.path.join("ai", "gradcam_results")
+        os.makedirs(save_dir, exist_ok=True)
+        gradcam_path = os.path.join(save_dir, f"gradcam_{timestamp}.png")
+        cv2.imwrite(gradcam_path, cv2.cvtColor(overlay, cv2.COLOR_RGB2BGR))
+
+        plt.figure(figsize=(8, 4))
+        plt.subplot(1, 2, 1)
+        plt.imshow(image)
+        plt.title("원본")
+
+        plt.subplot(1, 2, 2)
+        plt.imshow(overlay)
+        plt.title("Grad-CAM")
+        plt.savefig(os.path.join(save_dir, f"gradcam_plot_{timestamp}.png"))
+        plt.close()
+
+    report = f"이 이미지는 {pred_label} ({conf_value:.2f}%)\n비정상적인 질감, 경계선 왜곡, 조명 불균형 등 딥페이크 흔적이 감지되었습니다."
+
+    return pred_label, conf_value, report, gradcam_path, fake_intensity
