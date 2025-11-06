@@ -1,5 +1,4 @@
 // Path: src/pages/Restore.js
-
 import { useState, useRef } from 'react';
 import '../styles/restore.css';
 
@@ -13,7 +12,7 @@ export default function Restore() {
   const fileInputRef = useRef(null);
   const allChecked = ethicsChecked;
 
-  // ✅ 파일 변경 핸들러
+  // ✅ 파일 변경
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
     if (!selected) return;
@@ -22,7 +21,7 @@ export default function Restore() {
     setReResult(null);
   };
 
-  // ✅ 버튼 클릭 → 파일 선택창 열기
+  // ✅ 파일 첨부 버튼 클릭
   const handleUploadClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
@@ -51,6 +50,36 @@ export default function Restore() {
     }
   };
 
+  // ✅ 복원된 이미지 다운로드 (팝업 + 다운로드 실행)
+  const handleDownload = () => {
+    if (!reResult || !reResult.restored_image_url)
+      return alert('복원된 이미지가 없습니다.');
+
+    // 1️⃣ 팝업으로 다운로드 확인
+    const confirmDownload = window.confirm(
+      '복원된 이미지를 다운로드하시겠습니까?'
+    );
+    if (!confirmDownload) return;
+
+    // 2️⃣ 파일 저장 실행
+    fetch(reResult.restored_image_url)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'restored_image.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        // 3️⃣ 다운로드 완료 알림
+        alert('✅ 다운로드가 완료되었습니다!');
+      })
+      .catch(() => alert('다운로드 중 오류가 발생했습니다.'));
+  };
+
   return (
     <div className="restore-container">
       <h1 className="restore-title">
@@ -63,7 +92,6 @@ export default function Restore() {
           <h3>Upload Image</h3>
 
           <div className="restore-content-area">
-            {/* ✅ 수정된 부분 시작 */}
             {reImage ? (
               <img src={reImage} alt="preview" className="preview" />
             ) : (
@@ -75,7 +103,6 @@ export default function Restore() {
                 >
                   이미지 파일 첨부
                 </button>
-                {/* 숨겨진 input */}
                 <input
                   type="file"
                   accept="image/*"
@@ -85,10 +112,8 @@ export default function Restore() {
                 />
               </div>
             )}
-            {/* ✅ 수정된 부분 끝 */}
           </div>
 
-          {/* 체크박스 */}
           <div className="restore-consent-section">
             <label className="restore-checkbox-text">
               <input
@@ -96,14 +121,10 @@ export default function Restore() {
                 checked={ethicsChecked}
                 onChange={() => setEthicsChecked((prev) => !prev)}
               />
-              <p>
-                AI로 생성된 이미지를 타인비방, 범죄, 허위정보 생성 등 목적으로
-                사용하지 않겠습니다
-              </p>
+              <p>AI 이미지로 타인 비방·범죄·허위정보를 생성하지 않겠습니다</p>
             </label>
           </div>
 
-          {/* 버튼 */}
           <div className="restore-button-group">
             <button
               disabled={!reFile || !allChecked || reLoading}
@@ -136,8 +157,20 @@ export default function Restore() {
                 </div>
               )
             ) : (
-              <p className="result-placeholder">복원 이미지가 나타납니다</p>
+              <p className="restore-result-placeholder">
+                복원 이미지가 나타납니다
+              </p>
             )}
+          </div>
+
+          {/* ✅ 다운로드 버튼 */}
+          <div className="restore-button-group">
+            <button
+              onClick={handleDownload}
+              disabled={!reResult || reResult.error}
+            >
+              Download
+            </button>
           </div>
         </div>
       </div>

@@ -27,7 +27,7 @@ export default function Conclusion() {
   return (
     <div className="conclusion-container">
       <h1 className="conclusion-sub-title">
-        AI는 이미지를 분석해 <span className="blue">진실을 찾아내고,</span>
+        AI는 이미지를 분석해 <span className="blue">진실을 찾아내고, </span>
         복원해
         <span className="red"> 잃어버린 기억을 되살립니다</span>
         <br />

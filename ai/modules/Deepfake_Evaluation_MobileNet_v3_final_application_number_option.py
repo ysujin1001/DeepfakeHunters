@@ -15,7 +15,7 @@ from datetime import datetime
 # ==========================================================
 # ✅ Grad-CAM 생성 함수
 # ==========================================================
-def generate_gradcam(model, image_tensor, target_layer):
+def generate_gradcam(model, image_tensor, target_layer, image):
     grads = []
     activations = []
 
@@ -43,9 +43,15 @@ def generate_gradcam(model, image_tensor, target_layer):
         cam += w * activation[i, :, :]
 
     cam = np.maximum(cam, 0)
-    cam = cv2.resize(cam, (224, 224))
     cam -= np.min(cam)
     cam /= np.max(cam) if np.max(cam) != 0 else 1
+
+    
+    # ✅ 원본 이미지 크기로 리사이즈
+    width, height = image.size
+    cam = cv2.resize(cam, (width, height))
+    # (jrheo 수정) cam = cv2.resize(cam, (224, 224))
+        
     return cam
 
 
@@ -82,10 +88,13 @@ def analyze_image_with_model_type(path, model_type="korean", visualize=True):
     gradcam_path = None
     fake_intensity = None
     if visualize:
-        cam = generate_gradcam(model, input_tensor, model.features[-1])
+        cam = generate_gradcam(model, input_tensor, model.features[-1], image)
+        img = np.array(image)
+         # (jrheo 수정) img = np.array(image.resize((224, 224)))
+        cam = cv2.resize(cam, (img.shape[1], img.shape[0]))  # width, height 맞춤
         heatmap = cv2.applyColorMap(np.uint8(255 * cam), cv2.COLORMAP_JET)
-        img = np.array(image.resize((224, 224)))
-
+       
+        
         # ✅ 붉은색 퍼짐 개선 — threshold 마스크 적용
         threshold = 0.4
         mask = cam > threshold
