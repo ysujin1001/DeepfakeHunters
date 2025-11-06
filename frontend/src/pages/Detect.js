@@ -230,7 +230,9 @@ export default function Detect() {
                 </div>
               )
             ) : (
-              <p className="result-placeholder">분석 이미지가 나타납니다</p>
+              <p className="detect-result-placeholder">
+                분석 이미지가 나타납니다
+              </p>
             )}
           </div>
 
