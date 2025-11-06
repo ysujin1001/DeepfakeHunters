@@ -1,5 +1,5 @@
 // Path: src/pages/Detect.js
-// Desc: 업로드 박스 안에 ‘분석대상 선택’ 및 파일첨부 버튼 삽입
+// Desc: 업로드 박스 안에 ‘분석대상 선택’ 및 파일첨부 버튼 삽입 (Grad-CAM 히트맵 표시 + PDF 보고서)
 
 import { useState, useRef } from 'react';
 import '../styles/detect.css';
@@ -15,7 +15,7 @@ export default function Detect() {
   const [reportUrl, setReportUrl] = useState(null);
   const [modelType, setModelType] = useState('korean'); // 분석 모델 선택
 
-  const fileInputRef = useRef(null); // 숨겨진 파일 input 제어용 ref
+  const fileInputRef = useRef(null);
   const allChecked = rightsChecked && disclaimerChecked;
 
   // 파일 선택
@@ -33,14 +33,26 @@ export default function Detect() {
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
-  // PDF 다운로드
+  // ✅ PDF 다운로드
   const handleDownloadPDF = async () => {
+    if (!result) return alert('분석 결과가 없습니다.');
+
+    // 🔹 PDF 생성용 JSON 구조 재정의
+    const reportData = {
+      result: `${result.pred_label || 'Unknown'} (${result.confidence?.toFixed(2) || 0}%)`,
+      fake_probability: result.fake_probability || 0,
+      gradcam: result.gradcam,
+      model_type: result.model_type || 'korean',
+      model_name: 'MobileNetV3-Small',
+    };
+
     try {
       const res = await fetch(`${process.env.REACT_APP_API_URL}/api/report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(result), // ✅ 분석 결과 JSON 전송
+        body: JSON.stringify(reportData),
       });
+
       if (!res.ok) throw new Error('PDF 생성 실패');
 
       const blob = await res.blob();
@@ -50,6 +62,8 @@ export default function Detect() {
       a.download = 'Deepfake_Heatmap_Report.pdf';
       a.click();
       URL.revokeObjectURL(url);
+
+      console.log('✅ PDF 생성 성공');
     } catch (err) {
       console.error(err);
       alert('PDF 생성 중 오류가 발생했습니다.');
@@ -78,14 +92,15 @@ export default function Detect() {
         method: 'POST',
         body: formData,
       });
-      const data = await res.json();
 
-      // ✅ 수정됨: 백엔드에서 문장이 아닌 숫자 데이터만 받음
+      const data = await res.json();
+      console.log('📊 백엔드 응답:', data);
+
       setResult(data);
 
-      // ✅ 수정됨: 프런트에서 문장 조합
+      // ✅ 결과 요약문 구성
       if (!data.error && data.pred_label && data.confidence !== undefined) {
-        const { pred_label, confidence, fake_probability } = data;
+        const { pred_label, confidence } = data;
         let msg = '';
 
         if (pred_label === 'Fake') {
@@ -113,7 +128,7 @@ export default function Detect() {
     <div className="detect-container">
       <h1 className="detect-title">
         이 이미지는 진짜일까요? – AI는 픽셀 단위로{' '}
-        <span className="red"> 진실을 추적</span>합니다
+        <span className="red">진실을 추적</span>합니다
       </h1>
 
       <div className="detect-main">
@@ -126,11 +141,8 @@ export default function Detect() {
               <img src={image} alt="preview" className="preview" />
             ) : (
               <div className="detect-inner-box">
-                {/* ✅ 분석 대상 선택 섹션 */}
                 <div className="detect-model-box">
-                  <p className="model-select-title">
-                    # 분석대상을 선택하세요 (택1)
-                  </p>
+                  <p className="model-select-title"># 분석대상을 선택하세요 (택1)</p>
                   <div className="detect-model-select">
                     <label>
                       <input
@@ -153,15 +165,10 @@ export default function Detect() {
                   </div>
                 </div>
 
-                {/* ✅ 파일 첨부 버튼 */}
-                <button
-                  className="detect-upload-btn"
-                  onClick={handleUploadClick}
-                >
+                <button className="detect-upload-btn" onClick={handleUploadClick}>
                   이미지 파일 첨부
                 </button>
 
-                {/* 숨겨진 input */}
                 <input
                   type="file"
                   accept="image/*"
@@ -173,7 +180,6 @@ export default function Detect() {
             )}
           </div>
 
-          {/* 체크박스 */}
           <div className="detect-consent-section">
             <label className="detect-checkbox-text">
               <input
@@ -189,9 +195,7 @@ export default function Detect() {
                 checked={disclaimerChecked}
                 onChange={() => setDisclaimerChecked((prev) => !prev)}
               />
-              <p>
-                AI 분석 결과는 참고용이며 법적 증거로 사용되지 않음을 이해합니다
-              </p>
+              <p>AI 분석 결과는 참고용이며 법적 증거로 사용되지 않음을 이해합니다</p>
             </label>
           </div>
 
@@ -206,7 +210,7 @@ export default function Detect() {
           </div>
         </div>
 
-        {/* [2] 화살표 영역 */}
+        {/* [2] 화살표 */}
         <div className="detect-arrow-box">
           <img src="/images/arrow.jpg" alt="arrow" />
         </div>
@@ -220,26 +224,34 @@ export default function Detect() {
                 <p className="detect-error-text">{result.error}</p>
               ) : (
                 <div className="detect-result-box">
-                  {result.gradcam && (
+                  {result.gradcam ? (
                     <img
                       src={`data:image/png;base64,${result.gradcam}`}
                       alt="Grad-CAM heatmap"
                       className="gradcam-preview"
+                      style={{
+                        width: '100%',
+                        height: 'auto',
+                        borderRadius: '8px',
+                        border: '1px solid #444',
+                        objectFit: 'contain',
+                        marginTop: '8px',
+                      }}
                     />
+                  ) : (
+                    <p className="result-placeholder">시각적 활성도: N/A</p>
                   )}
                 </div>
               )
             ) : (
-              <p className="result-placeholder">분석 이미지가 나타납니다</p>
+              <p className="detect-result-placeholder">
+                분석 이미지가 나타납니다
+              </p>
             )}
           </div>
 
           <div className="result-summary-row">
-            <div
-              className={`result-summary-box ${
-                result && !result.error ? 'active' : ''
-              }`}
-            >
+            <div className={`result-summary-box ${result && !result.error ? 'active' : ''}`}>
               {result && !result.error ? (
                 <>
                   <p className="detect-result-line">
@@ -253,9 +265,7 @@ export default function Detect() {
                   </p>
                 </>
               ) : (
-                <p className="detect-result-placeholder">
-                  분석 결과를 확인하세요
-                </p>
+                <p className="detect-result-placeholder">분석 결과를 확인하세요</p>
               )}
             </div>
 
