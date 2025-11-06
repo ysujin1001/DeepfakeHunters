@@ -136,8 +136,8 @@ def visualize_result(image, overlay, number_layer, report):
 # =====================================================
 def analyze_image_with_model_type(image_path, model_type="korean", visualize=True):
     model_paths = {
-        "korean": "D:/AI_DEV_Course/Work_space/PROJECT/Advanced_Project_Team2/Model(MobileNet)/mobilenetv3_deepfake_final.pth",
-        "foriegn": "D:/AI_DEV_Course/Work_space/PROJECT/Advanced_Project_Team2/Model(MobileNet)/mobilenetv3_deepfake_final_foriegn2.pth"
+        "korean": r"c:\AI\project\AdvancedProject\DeepfakeHunters\ai\models\mobilenetv3_deepfake_final.pth",
+        "foriegn": r"c:\AI\project\AdvancedProject\DeepfakeHunters\ai\models\mobilenetv3_deepfake_final_foriegn2.pth"
     }
 
     if model_type not in model_paths:
@@ -181,7 +181,7 @@ def analyze_image_with_model_type(image_path, model_type="korean", visualize=Tru
 # 8️⃣ 실행 예시
 # =====================================================
 if __name__ == "__main__":
-    image_path = "D:/AI_DEV_Course/Work_space/PROJECT/Advanced_Project_Team2/test_images/test1(man).png"
+    image_path = r"C:\AI\project\AdvancedProject\DeepfakeHunters\backend\data\test_images\test5.jpg"
 
     # 'korean' 또는 'foriegn' 선택
     model_type = "foriegn"

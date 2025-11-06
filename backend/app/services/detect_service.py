@@ -57,9 +57,18 @@ def predict_fake(model_dict, image_path: str, model_type="korean") -> dict:
 
     # ✅ 결과 JSON 구성
     return {
+<<<<<<< Updated upstream
         "pred_label": pred_label,                    # 예: "Fake"
         "confidence": confidence,                    # 예: 85.68
         "fake_probability": fake_probability,        # Grad-CAM 평균값 기반 (0.0~1.0)
         "gradcam": gradcam_b64,                      # base64 이미지
         "result": report                             # 보고서 문장
+=======
+    "pred_label": "Fake" if prob >= 0.5 else "Real",
+    "confidence": round(prob * 100, 2),
+    "fake_probability": round(prob, 4),
+    "gradcam": gradcam_b64,
+    "result": result,
+    "image_path": image_path,  # ✅ 실제 파일 경로 추가
+>>>>>>> Stashed changes
     }

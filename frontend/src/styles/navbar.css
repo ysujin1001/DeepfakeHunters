@@ -11,8 +11,8 @@
   justify-content: space-between;
   background-color: #eeeeee;
   border-bottom: 2px solid #0f172a;
-  padding: 0px 10px 0px 10px; /* ★ 상 우 하 좌 */
-  height: 75px;
+  padding: 0px 50px 0px 100px; /* ★ 상 우 하 좌 */
+  height: 120px;
   box-sizing: border-box; /* ★ 높이 계산 안정화 */
 }
 
@@ -20,28 +20,29 @@
 .navbar-left {
   display: flex;
   align-items: center; /* 팀명 세로 중앙 */
-  gap: 20px; /* 로고~글자 사이 간격 */
+  gap: 40px; /* 로고~글자 사이 간격 */
 }
 
 /* [좌] 팀: 로고 */
 .navbar-logo {
-  width: 100px;
+  width: 160px;
   height: auto;
   border-radius: 3px;
 }
 
 /* [좌] 팀: 타이틀 */
 .navbar-title {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 900;
   color: black;
   line-height: 1.2;
+  text-shadow: 0 0 8px rgba(72, 121, 218, 0.6), 2px 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 /* ✅ 강조용 텍스트 */
 .special-text {
-  color: #122a95;
-  font-size: 3rem; /* 나머지의 약 2배 크기 */
+  color: black;
+  font-size: 5rem; /* 나머지의 약 2배 크기 */
   font-weight: 1000;
   letter-spacing: 5px;
   /* 🔥 강한 붉은 빛 그림자 (살짝 네온 느낌) */
@@ -69,8 +70,8 @@
 /* [우] 메뉴 : 전체 */
 .navbar-menu {
   display: flex;
-  gap: 100px;
-  font-size: 1rem;
+  gap: 80px;
+  font-size: 1.5rem;
   font-weight: 600;
   margin-right: 40px; /* ★ 오른쪽 끝에 공간 확보 */
   align-items: flex-start; /* ✅ 텍스트를 약간 위쪽 정렬 */
@@ -98,7 +99,7 @@
 
 /* [우] 메뉴 : 텍스트(활성 상태) */
 .nav-item.active {
-  font-size: 1.1rem;
+  font-size: 2rem;
   font-weight: 900;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
@@ -106,9 +107,9 @@
 /* ✅ [추가] 한글 설명 tooltip */
 .nav-tooltip {
   position: absolute;
-  bottom: -20px;
-  font-size: 0.8rem;
-  color: #444;
+  bottom: -30px;
+  font-size: 1.1rem;
+  color: #141414;
   opacity: 0;
   transform: translateY(-4px);
   pointer-events: none;
