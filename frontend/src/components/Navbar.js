@@ -1,8 +1,14 @@
+// Path: src/components/Navbar.js
+// Desc: 상단 네비게이션 바 (텍스트 순환 + 메뉴 Tooltip)
+
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import '../styles/navbar.css';
 
 export default function Navbar() {
+  // ======================================================
+  // 🧠 상태 정의
+  // ======================================================
   const texts = [
     <span className="special-text">2팀</span>,
     <>
@@ -14,28 +20,33 @@ export default function Navbar() {
   ];
 
   const [index, setIndex] = useState(0);
-  const [fadeState, setFadeState] = useState('fade-in'); // 'fade-in' | 'fade-out'
+  const [fadeState, setFadeState] = useState('fade-in');
 
+  // ======================================================
+  // 🔁 텍스트 페이드 전환 (2초 표시 → 0.8초 전환)
+  // ======================================================
   useEffect(() => {
     let fadeOutTimeout;
     let switchTimeout;
 
     const startCycle = () => {
-      // ✅ 2초 표시 후 페이드아웃
+      // ① 2초 동안 현재 텍스트 유지
       fadeOutTimeout = setTimeout(() => {
         setFadeState('fade-out');
 
-        // ✅ 페이드아웃 0.8초 후 다음 텍스트로 전환 + 페이드인
+        // ② 0.8초 후 다음 텍스트로 전환
         switchTimeout = setTimeout(() => {
-          setIndex((prev) => (prev + 1) % texts.length); // 순환
+          setIndex((prev) => (prev + 1) % texts.length);
           setFadeState('fade-in');
         }, 800);
-      }, 2000); // 표시시간 (2초)
+      }, 2000);
     };
 
     startCycle();
 
     const interval = setInterval(startCycle, 2800); // 2초 표시 + 0.8초 전환
+
+    // 🧹 클린업
     return () => {
       clearInterval(interval);
       clearTimeout(fadeOutTimeout);
@@ -43,8 +54,14 @@ export default function Navbar() {
     };
   }, []);
 
+  // ======================================================
+  // 🖥️ 렌더링
+  // ======================================================
   return (
     <nav className="navbar">
+      {/* ------------------------------ */}
+      {/* 🔹 좌측 로고 & 텍스트 순환 영역 */}
+      {/* ------------------------------ */}
       <div className="navbar-left">
         <img
           src="/images/teamImage.jpg"
@@ -52,13 +69,15 @@ export default function Navbar() {
           className="navbar-logo"
         />
 
-        {/* ✅ 3단계 텍스트 순환 */}
+        {/* 3단계 순환 텍스트 */}
         <div className="navbar-title">
           <span className={`fade-text ${fadeState}`}>{texts[index]}</span>
         </div>
       </div>
 
-      {/* ✅ 메뉴 hover 시 한글 설명 추가 */}
+      {/* ------------------------------ */}
+      {/* 🔹 우측 메뉴 (hover 시 한글 Tooltip) */}
+      {/* ------------------------------ */}
       <div className="navbar-menu">
         <NavLink to="/" className="nav-item">
           Home

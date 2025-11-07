@@ -98,7 +98,7 @@ async def restore_image(file: UploadFile = File(...)):
         Image.fromarray(restored).save(save_path)
 
         print(f"💾 [RESTORE] 복원 완료 → {save_path}")
-        return {"restored_image_url": f"http://127.0.0.1:8001/data/restored/{safe_name}"}
+        return {"restored_image_url": f"http://192.168.0.7:8001/data/restored/{safe_name}"}
 
     except Exception as e:
         print(f"❌ [RESTORE ERROR]: {e}")

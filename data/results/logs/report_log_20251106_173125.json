@@ -1,0 +1,9 @@
+{
+    "created_at": "2025-11-06 17:31:46",
+    "model_name": "MobileNetV3-Small",
+    "model_type": "한국인 전용 모델",
+    "result": "Real (14.04%)",
+    "fake_probability": 0.142,
+    "gradcam_image": "data\\results\\images\\gradcam_20251106_173125.png",
+    "pdf_path": "data\\results\\pdfs\\heatmap_report_20251106_173125.pdf"
+}

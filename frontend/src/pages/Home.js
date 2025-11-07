@@ -2,11 +2,17 @@ import React, { useEffect, useState } from 'react';
 import '../styles/home.css';
 
 export default function Home() {
+  // ======================================================
+  // 🧠 상태 정의
+  // ======================================================
   const [showAI, setShowAI] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [alertMode, setAlertMode] = useState(false);
   const [reset, setReset] = useState(false);
 
+  // ======================================================
+  // 🔁 애니메이션 사이클 (useEffect)
+  // ======================================================
   useEffect(() => {
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -18,13 +24,13 @@ export default function Home() {
       setReset(false);
       await wait(2000);
 
-      // ③ AI 이미지 뜨자마자 경고 + 테두리 깜빡임
+      // ② AI 이미지 + 경고 표시 + 테두리 깜빡임
       setShowAI(true);
       setShowWarning(true);
       setAlertMode(true);
       await wait(2000);
 
-      // ④ 모두 페이드아웃
+      // ③ 전체 페이드아웃 (리셋)
       setReset(true);
       setShowAI(false);
       setShowWarning(false);
@@ -32,14 +38,22 @@ export default function Home() {
       await wait(500);
     };
 
+    // 🔄 루프 시작
     cycle();
     const loop = setInterval(cycle, 4500); // 전체 루프 시간
+
+    // 🧹 클린업
     return () => clearInterval(loop);
   }, []);
 
+  // ======================================================
+  // 🖼️ UI 렌더링
+  // ======================================================
   return (
     <div className="home-container">
-      {/* 왼쪽 텍스트 영역 */}
+      {/* ------------------------------ */}
+      {/* 📘 왼쪽 텍스트 영역 */}
+      {/* ------------------------------ */}
       <div className="home-text">
         <h1 className="home-title">
           AI는 <span className="red">거짓</span>을 드러내고,
@@ -48,6 +62,7 @@ export default function Home() {
           <span className="yellow">기술</span>입니다
         </h1>
 
+        {/* 섹션 1 */}
         <div className="home-section">
           <div className="section-number">1</div>
           <div>
@@ -64,6 +79,7 @@ export default function Home() {
           </div>
         </div>
 
+        {/* 섹션 2 */}
         <div className="home-section">
           <div className="section-number">2</div>
           <div>
@@ -87,6 +103,7 @@ export default function Home() {
           </div>
         </div>
 
+        {/* 섹션 3 */}
         <div className="home-section">
           <div className="section-number">3</div>
           <div>
@@ -105,7 +122,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 오른쪽 이미지 영역 */}
+      {/* ------------------------------ */}
+      {/* 📸 오른쪽 이미지 영역 */}
+      {/* ------------------------------ */}
       <div className={`home-image ${alertMode ? 'alert-border' : ''}`}>
         {/* 원본 이미지 */}
         <img

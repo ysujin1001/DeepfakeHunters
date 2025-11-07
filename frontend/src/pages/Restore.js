@@ -3,6 +3,9 @@ import { useState, useRef } from 'react';
 import '../styles/restore.css';
 
 export default function Restore() {
+  // ======================================================
+  // 🧠 상태 정의
+  // ======================================================
   const [reImage, setReImage] = useState(null);
   const [reFile, setReFile] = useState(null);
   const [reResult, setReResult] = useState(null);
@@ -12,26 +15,31 @@ export default function Restore() {
   const fileInputRef = useRef(null);
   const allChecked = ethicsChecked;
 
-  // ✅ 파일 변경
+  // ======================================================
+  // 📂 파일 업로드 관련
+  // ======================================================
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
     if (!selected) return;
+
     setReFile(selected);
     setReImage(URL.createObjectURL(selected));
     setReResult(null);
   };
 
-  // ✅ 파일 첨부 버튼 클릭
   const handleUploadClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
-  // ✅ 복원 요청
+  // ======================================================
+  // 🤖 복원 요청
+  // ======================================================
   const handleRestore = async () => {
     if (!reFile) return alert('파일을 선택하세요!');
     if (!allChecked) return alert('체크박스에 동의해주세요.');
 
     setReLoading(true);
+
     const formData = new FormData();
     formData.append('file', reFile);
 
@@ -40,7 +48,9 @@ export default function Restore() {
         method: 'POST',
         body: formData,
       });
+
       const data = await res.json();
+      console.log(data);
       setReResult(data);
     } catch (err) {
       console.error(err);
@@ -50,18 +60,20 @@ export default function Restore() {
     }
   };
 
-  // ✅ 복원된 이미지 다운로드 (팝업 + 다운로드 실행)
+  // ======================================================
+  // 💾 복원된 이미지 다운로드
+  // ======================================================
   const handleDownload = () => {
     if (!reResult || !reResult.restored_image_url)
       return alert('복원된 이미지가 없습니다.');
 
-    // 1️⃣ 팝업으로 다운로드 확인
+    // 1️⃣ 다운로드 확인 팝업
     const confirmDownload = window.confirm(
       '복원된 이미지를 다운로드하시겠습니까?'
     );
     if (!confirmDownload) return;
 
-    // 2️⃣ 파일 저장 실행
+    // 2️⃣ 다운로드 실행
     fetch(reResult.restored_image_url)
       .then((res) => res.blob())
       .then((blob) => {
@@ -74,12 +86,15 @@ export default function Restore() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        // 3️⃣ 다운로드 완료 알림
+        // 3️⃣ 완료 알림
         alert('✅ 다운로드가 완료되었습니다!');
       })
       .catch(() => alert('다운로드 중 오류가 발생했습니다.'));
   };
 
+  // ======================================================
+  // 🖥️ 렌더링
+  // ======================================================
   return (
     <div className="restore-container">
       <h1 className="restore-title">
@@ -87,7 +102,9 @@ export default function Restore() {
       </h1>
 
       <div className="restore-main">
+        {/* ================================================== */}
         {/* [1️⃣ 업로드 영역] */}
+        {/* ================================================== */}
         <div className="restore-box">
           <h3>Upload Image</h3>
 
@@ -114,6 +131,7 @@ export default function Restore() {
             )}
           </div>
 
+          {/* 체크박스 */}
           <div className="restore-consent-section">
             <label className="restore-checkbox-text">
               <input
@@ -125,6 +143,7 @@ export default function Restore() {
             </label>
           </div>
 
+          {/* 복원 버튼 */}
           <div className="restore-button-group">
             <button
               disabled={!reFile || !allChecked || reLoading}
@@ -135,12 +154,16 @@ export default function Restore() {
           </div>
         </div>
 
-        {/* [➡️ 화살표] */}
+        {/* ================================================== */}
+        {/* [➡️ 화살표 영역] */}
+        {/* ================================================== */}
         <div className="restore-arrow-box">
           <img src="/images/arrow.jpg" alt="arrow" />
         </div>
 
+        {/* ================================================== */}
         {/* [2️⃣ 결과 영역] */}
+        {/* ================================================== */}
         <div className="restore-box">
           <h3>Restored Result</h3>
           <div className="restore-content-area">
@@ -163,7 +186,7 @@ export default function Restore() {
             )}
           </div>
 
-          {/* ✅ 다운로드 버튼 */}
+          {/* 다운로드 버튼 */}
           <div className="restore-button-group">
             <button
               onClick={handleDownload}

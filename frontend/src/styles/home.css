@@ -1,13 +1,20 @@
+/* ======================================================
+   🌌 전역 설정
+====================================================== */
+
 /* 전체 페이지 여백 및 배경 초기화 */
 html,
 body {
   margin: 0;
   padding: 0;
-  background-color: black; /* 전체 배경 통일 */
+  background-color: black;
   overflow-x: hidden; /* 좌우 스크롤 방지 */
 }
 
-/* home 화면 : 전체 */
+/* ======================================================
+   🏠 Home 전체 레이아웃
+====================================================== */
+
 .home-container {
   display: flex;
   justify-content: space-between;
@@ -21,16 +28,112 @@ body {
   background-color: black;
   color: #f5f5f5;
   margin-top: 70px; /* 내용이 네비게이션 아래에서 시작하도록 */
-  overflow: hidden; /* ✅ 내부 스크롤 차단 */
+  overflow: hidden; /* 내부 스크롤 차단 */
 }
 
-/* [part1. 좌] 텍스트 영역 ] */
+/* ======================================================
+   🧾 왼쪽 텍스트 영역 (.home-text)
+====================================================== */
+
 .home-text {
   flex: 1;
   max-width: 65%;
 }
 
-/* [part2. 우] 이미지 영역 ] */
+/* ------------------------------
+   타이틀
+------------------------------ */
+
+.home-title {
+  font-size: 3.8rem;
+  font-weight: 9000;
+  line-height: 1.5;
+  margin-top: 70px;
+  margin-bottom: 50px;
+  color: #fff;
+}
+
+/* 타이틀: 강조 색상 (이하 동일) */
+.blue {
+  color: #3b82f6;
+}
+
+.red {
+  color: #ef4444;
+}
+
+.yellow {
+  color: rgb(236, 236, 85);
+}
+
+.highlight {
+  color: #eb5e5e;
+  font-weight: 600;
+}
+
+/* ------------------------------
+   섹션 (1, 2, 3 통합 스타일)
+------------------------------ */
+
+.home-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 9px; /* 섹션간 세로폭 */
+}
+
+/* 섹션 번호 */
+.section-number {
+  background-color: #f5f5f5;
+  color: black;
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 0.9rem;
+  font-weight: 1000;
+  margin-top: 8px;
+}
+
+/* 섹션 제목 + 부제 */
+.section-title {
+  margin: 0 0 1dvb 0;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.section-subtitle {
+  font-weight: 400;
+  font-size: 1.1rem;
+}
+
+/* 섹션 본문 */
+.home-section p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #e5e5e5;
+}
+
+/* 강조 색상 */
+.highlight-blue {
+  color: #3b82f6;
+  font-weight: 700;
+}
+
+.highlight-red {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.highlight-yellow {
+  color: rgb(236, 236, 85);
+  font-weight: 700;
+}
+
+/* ======================================================
+   📸 오른쪽 이미지 영역 (.home-image)
+====================================================== */
+
 .home-image {
   flex-shrink: 0;
   position: relative;
@@ -39,6 +142,14 @@ body {
   margin-top: 60px;
   border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+/* 이미지 공통 스타일 */
+.home-image img {
+  width: 650px;
+  height: 650px;
+  border-radius: 10px;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
@@ -51,7 +162,7 @@ body {
   height: 100%;
   object-fit: cover;
   border-radius: 10px;
-  transition: opacity 1s ease-in-out; /* ✅ 부드러운 페이드 */
+  transition: opacity 1s ease-in-out;
   opacity: 0;
 }
 
@@ -64,11 +175,15 @@ body {
   opacity: 0;
 }
 
-/*  루프 리셋 시 즉시 전환 */
+/* 루프 리셋 시 즉시 전환 */
 .reset {
   transition: none;
   opacity: 0;
 }
+
+/* ======================================================
+   ⚠️ Deepfake 경고 애니메이션
+====================================================== */
 
 /* AI 이미지 경고 테두리 번쩍임 */
 .alert-border {
@@ -88,7 +203,7 @@ body {
   }
 }
 
-/* 딥페이크 경고 표시 */
+/* 딥페이크 경고 텍스트 */
 .deepfake-warning {
   position: absolute;
   top: 50%; /* 수직 중앙 */
@@ -97,15 +212,15 @@ body {
   /* color: #ff3b3b; 강렬한 빨강 */
   color: red;
   font-weight: 900;
-  font-size: 4.5rem; /* ✅ 기존보다 크고 눈에 띄게 */
+  font-size: 4.5rem; /* 기존보다 크고 눈에 띄게 */
   text-align: center;
   text-shadow: 0 0 20px rgba(40, 5, 5, 0.8); /* 번쩍 효과 */
   transition: opacity 1s ease-in-out;
   opacity: 0;
   z-index: 5; /* 이미지 위에 표시되도록 */
-  background: none; /* ✅ 박스 제거 */
-  border: none; /* ✅ 테두리 제거 */
-  padding: 0; /* ✅ 여백 제거 */
+  background: none; /* 박스 제거 */
+  border: none; /* 테두리 제거 */
+  padding: 0; /* 여백 제거 */
 }
 
 /* 경고 페이드 인/아웃 */
@@ -115,96 +230,4 @@ body {
 
 .deepfake-warning.fade-out {
   opacity: 0;
-}
-
-/* 기존 이미지 스타일 (유지) */
-.home-image img {
-  width: 650px;
-  height: 650px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-}
-
-/* 타이틀 */
-.home-title {
-  font-size: 3.8rem;
-  font-weight: 9000;
-  line-height: 1.5;
-  margin-top: 70px;
-  margin-bottom: 50px;
-  color: #fff;
-}
-
-/* 타이틀: 강조 색상 */
-.blue {
-  color: #3b82f6;
-}
-
-.red {
-  color: #ef4444;
-}
-
-.yellow {
-  color: rgb(236, 236, 85);
-}
-
-.highlight {
-  color: #eb5e5e;
-  font-weight: 600;
-}
-
-/* 섹션 : 1,2,3 통일 */
-.home-section {
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  margin-bottom: 9px; /* 섹션간 세로폭 */
-}
-
-/* 섹션 : 아이콘(번호) */
-.section-number {
-  background-color: #f5f5f5;
-  color: black;
-  border-radius: 6px;
-  padding: 3px 10px;
-  font-size: 0.9rem;
-  font-weight: 1000;
-  margin-top: 8px;
-}
-
-/* 섹션 : 제목 */
-.section-title {
-  margin: 0 0 1dvb 0;
-  font-size: 1.7rem;
-  font-weight: 700;
-  color: #fff;
-}
-
-.section-subtitle {
-  font-weight: 400;
-  font-size: 1.1rem;
-}
-
-/* 섹션 : 내용 */
-.home-section p {
-  font-size: 1.2rem;
-  font-weight: 300;
-  line-height: 1.6;
-  color: #e5e5e5;
-}
-
-/* 강조 색상 */
-.highlight-blue {
-  color: #3b82f6;
-  font-weight: 700;
-}
-
-.highlight-red {
-  color: #ef4444;
-  font-weight: 700;
-}
-
-.highlight-yellow {
-  color: rgb(236, 236, 85);
-  font-weight: 700;
 }

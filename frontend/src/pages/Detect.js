@@ -5,6 +5,9 @@ import { useState, useRef } from 'react';
 import '../styles/detect.css';
 
 export default function Detect() {
+  // ======================================================
+  // 🧠 상태 정의
+  // ======================================================
   const [image, setImage] = useState(null);
   const [file, setFile] = useState(null);
   const [rightsChecked, setRightsChecked] = useState(false);
@@ -12,12 +15,14 @@ export default function Detect() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [summaryText, setSummaryText] = useState('');
-  const [modelType, setModelType] = useState('korean'); // 분석 모델 선택
+  const [modelType, setModelType] = useState('korean');
 
   const fileInputRef = useRef(null);
   const allChecked = rightsChecked && disclaimerChecked;
 
-  // 파일 선택
+  // ======================================================
+  // 📂 파일 선택 & 첨부
+  // ======================================================
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
     if (!selected) return;
@@ -27,12 +32,13 @@ export default function Detect() {
     setSummaryText('');
   };
 
-  // 파일 첨부 버튼 클릭
   const handleUploadClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
-  // ✅ PDF 다운로드 (팝업 + 알림 포함)
+  // ======================================================
+  // 📄 PDF 다운로드 (보고서)
+  // ======================================================
   const handleDownloadPDF = async () => {
     if (!result) return alert('분석 결과가 없습니다.');
 
@@ -62,6 +68,7 @@ export default function Detect() {
 
       if (!res.ok) throw new Error('PDF 생성 실패');
 
+      // 🔹 PDF 다운로드 실행
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -70,7 +77,6 @@ export default function Detect() {
       a.click();
       URL.revokeObjectURL(url);
 
-      // ✅ 완료 알림
       alert('✅ PDF 보고서가 다운로드되었습니다!');
     } catch (err) {
       console.error(err);
@@ -78,12 +84,15 @@ export default function Detect() {
     }
   };
 
-  // AI 판별 요청
+  // ======================================================
+  // 🤖 AI 판별 요청
+  // ======================================================
   const handleDetect = async () => {
     if (!file) return alert('파일을 선택하세요!');
     if (!allChecked) return alert('체크박스에 모두 동의해주세요.');
 
     setLoading(true);
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('model_type', modelType);
@@ -105,6 +114,7 @@ export default function Detect() {
       console.log('📊 백엔드 응답:', data);
       setResult(data);
 
+      // 🔹 결과 메시지 생성
       if (!data.error && data.pred_label && data.confidence !== undefined) {
         const { pred_label, confidence } = data;
         const msg =
@@ -124,6 +134,9 @@ export default function Detect() {
     }
   };
 
+  // ======================================================
+  // 🖥️ 렌더링
+  // ======================================================
   return (
     <div className="detect-container">
       <h1 className="detect-title">
@@ -132,7 +145,9 @@ export default function Detect() {
       </h1>
 
       <div className="detect-main">
+        {/* ================================================== */}
         {/* [1] 업로드 영역 */}
+        {/* ================================================== */}
         <div className="detect-box">
           <h3>Upload Image</h3>
 
@@ -167,6 +182,7 @@ export default function Detect() {
                   </div>
                 </div>
 
+                {/* 파일 첨부 버튼 */}
                 <button
                   className="detect-upload-btn"
                   onClick={handleUploadClick}
@@ -174,6 +190,7 @@ export default function Detect() {
                   이미지 파일 첨부
                 </button>
 
+                {/* 파일 입력 */}
                 <input
                   type="file"
                   accept="image/*"
@@ -185,6 +202,7 @@ export default function Detect() {
             )}
           </div>
 
+          {/* 동의 체크박스 */}
           <div className="detect-consent-section">
             <label className="detect-checkbox-text">
               <input
@@ -206,6 +224,7 @@ export default function Detect() {
             </label>
           </div>
 
+          {/* 분석 버튼 */}
           <div className="detect-button-group">
             <button
               className="detect-btn"
@@ -217,14 +236,19 @@ export default function Detect() {
           </div>
         </div>
 
-        {/* [2] 화살표 */}
+        {/* ================================================== */}
+        {/* [2] 화살표 영역 */}
+        {/* ================================================== */}
         <div className="detect-arrow-box">
           <img src="/images/arrow.jpg" alt="arrow" />
         </div>
 
+        {/* ================================================== */}
         {/* [3] 결과 영역 */}
+        {/* ================================================== */}
         <div className="detect-box">
           <h3>Detection Results</h3>
+
           <div className="detect-content-area">
             {result ? (
               result.error ? (
@@ -249,6 +273,7 @@ export default function Detect() {
             )}
           </div>
 
+          {/* 결과 요약 및 PDF 버튼 */}
           <div className="result-summary-row">
             <div
               className={`result-summary-box ${
@@ -274,7 +299,7 @@ export default function Detect() {
               )}
             </div>
 
-            {/* ✅ 팝업 포함된 PDF 다운로드 버튼 */}
+            {/* ✅ PDF 다운로드 버튼 */}
             <button
               className="pdf-btn"
               onClick={handleDownloadPDF}
