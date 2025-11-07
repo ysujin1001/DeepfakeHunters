@@ -2,7 +2,9 @@
 
 AI 기반 얼굴 복원 및 딥페이크 탐지 웹서비스
 
-#### ==============================================================================
+---
+
+---
 
 ## 🧭 Branch Strategy
 
@@ -27,17 +29,21 @@ AI 기반 얼굴 복원 및 딥페이크 탐지 웹서비스
 
 ```bash
 # 1️⃣ Conda 환경 생성
-conda create -n deepfakehunters python=3.10
+conda env create -f environment.yml
+# (추후 모델링용 라이브러리 – e.g., deepface, insightface, gfpgan, onnxruntime 등 – 추가 예정)
 
 # 2️⃣ 환경 활성화
 conda activate deepfakehunters
 
-# 3️⃣ 필수 패키지 설치
-pip install fastapi uvicorn opencv-python numpy torch torchvision torchaudio
-# (추후 모델링용 라이브러리 – e.g., deepface, insightface, gfpgan, onnxruntime 등 – 추가 예정)
+# 3️⃣ 환경 삭제
+conda env remove -n deepfakehunters
 ```
 
-#### 초기 설정 ============================================================================
+#### 초기 설정
+
+---
+
+---
 
 🧠 DeepfakeHunters 초기 환경 설정 가이드
 
@@ -50,11 +56,9 @@ Docker Desktop을 먼저 실행합니다.
 🧱 (2) MySQL 컨테이너 빌드 (최초 1회만 실행)
 
 ```bash
-docker run --name deepfake_db \
-  -e MYSQL_ROOT_PASSWORD=1234 \
-  -e MYSQL_DATABASE=deepfake_db \
-  -p 3306:3306 \
-  -d mysql:8.0
+# 초기 실행 시 세팅하는데 시간 소요
+cd db
+docker-compose up -d
 ```
 
 ⚠️ 위 명령은 최초 1회만 실행합니다.
@@ -75,13 +79,7 @@ Database deepfake_db
 conda activate deepfakehunters
 ```
 
-2️⃣ 필수 패키지 설치
-
-```bash
-pip install -r requirements.txt
-```
-
-3️⃣ .env 파일 생성
+2️⃣ .env 파일 생성
 (📁 위치: /backend/.env)
 
 ```bash
@@ -90,20 +88,14 @@ DATABASE_URL=mysql+pymysql://root:1234@192.168.0.33:3306/deepfake_db
 
 # 2 프런트엔드 환경 설정 (최초 1회)
 
-1️⃣ 가상환경 활성화
-
-```bash
-conda activate deepfakehunters
-```
-
-2️⃣ 필수 패키지 설치
+1️⃣ 필수 패키지 설치
 
 ```bash
 cd frontend
 npm install
 ```
 
-3️⃣ .env 파일 생성
+2️⃣ .env 파일 생성
 (📁 위치: /backend/.env)
 
 ```bash
@@ -117,7 +109,7 @@ REACT_APP_API_URL=http://192.168.0.33:8000
 2️⃣ 백엔드 서버 실행
 
 ```bash
-uvicorn backend.main:app --reload --port 8001
+python backend/main.py
 ```
 
 3️⃣ 프론트엔드 실행

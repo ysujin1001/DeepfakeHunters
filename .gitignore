@@ -210,3 +210,6 @@ backend/mysql_data/
 
 # AI 복원 모델 가중치 파일 제외
 ai/old_photo_restoration/*.pth
+
+
+db/Mysql

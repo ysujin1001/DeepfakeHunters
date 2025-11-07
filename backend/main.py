@@ -6,7 +6,9 @@
 # cd E:\yun\DeepfakeHunters
 # uvicorn backend.main:app --reload --port 8001
 
-import os
+import os,sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import asyncio
 from datetime import datetime, timedelta
 from fastapi import FastAPI, Request
@@ -15,7 +17,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from dotenv import load_dotenv
-
 # ------------------------------------------------------
 # 0️⃣ 환경 변수 로드 (.env)
 # ------------------------------------------------------
@@ -33,10 +34,10 @@ print("✅ OPENAI_API_KEY 감지됨" if openai_key else "⚠️ OPENAI_API_KEY �
 # ------------------------------------------------------
 # 1️⃣ 내부 모듈 임포트
 # ------------------------------------------------------
-from backend.app.core.database import Base, engine, SessionLocal
-from backend.app.models.db_models import Upload
 from ai.modules.predictor import DeepfakePredictor
 from ai.modules.restorer import FaceRestorer
+from backend.app.core.database import Base, engine, SessionLocal
+from backend.app.models.db_models import Upload
 from backend.app.api.routes_upload import router as upload_router
 from backend.app.api.routes_detect import router as detect_router
 
@@ -132,3 +133,13 @@ async def cleanup_deleted_uploads():
 @app.on_event("startup")
 async def start_cleanup_task():
     asyncio.create_task(cleanup_deleted_uploads())
+
+if __name__ == "__main__":
+    import uvicorn
+    print("🚀 FastAPI 서버 실행 중 (http://127.0.0.1:8001)")
+    uvicorn.run(
+        "main:app",          # 모듈:앱 경로
+        host="0.0.0.0",              # 외부 접속 허용
+        port=8001,
+        reload=True,                 # 코드 변경 시 자동 리로드
+    )
