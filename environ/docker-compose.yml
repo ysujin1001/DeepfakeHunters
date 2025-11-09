@@ -6,7 +6,7 @@ services:
     container_name: deepfake_db
     restart: unless-stopped
     volumes:
-      - ./Mysql:/var/lib/mysql
+      - ./output/Mysql:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       - MYSQL_DATABASE=deepfake_db

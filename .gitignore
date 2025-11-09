@@ -216,3 +216,9 @@ db/Mysql
 data/*
 frontend/package-lock.json
 backend/temp
+backend/data
+
+environ/app/data
+environ/output
+environ/logs
+environ/Mysql

@@ -29,7 +29,7 @@ AI 기반 얼굴 복원 및 딥페이크 탐지 웹서비스
 
 ```bash
 # 1️⃣ Conda 환경 생성
-conda env create -f environment.yml
+conda env create -f environ/environment.yml
 # (추후 모델링용 라이브러리 – e.g., deepface, insightface, gfpgan, onnxruntime 등 – 추가 예정)
 
 # 2️⃣ 환경 활성화
@@ -120,9 +120,22 @@ REACT_APP_API_URL=http://192.168.0.33:8000
 python backend/main.py
 ```
 
+```bash
+# docker로 구동 시
+docker-compose -f environ/docker-compose-backend.yml up -d
+# 다시 build 해야하는 경우
+docker-compose -f environ/docker-compose-backend.yml build
+```
+
 3️⃣ 프론트엔드 실행
 
 ```bash
 cd frontend
 npm run start
+```
+
+4️⃣ NGINX 실행
+
+```bash
+docker-compose -f environ/docker-compose-nginx.yml up -d
 ```

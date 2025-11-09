@@ -1,4 +1,4 @@
-import uvicorn
+import uvicorn,os
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,6 +22,7 @@ app.include_router(detect_router, prefix="/detect")
 app.include_router(restore_router, prefix="/restore")
 
 # 6️⃣ 정적 파일 제공 (복원 결과 이미지 접근 허용)
+os.makedirs(f"{config['BASE_DIR']}/data", exist_ok=True)
 app.mount("/data", StaticFiles(
     directory=f"{config['BASE_DIR']}/data"), name="data")
 

@@ -1,9 +1,0 @@
-{
-    "created_at": "2025-11-10 00:20:32",
-    "model_name": "MobileNetV3-Small",
-    "model_type": "한국인 전용 모델",
-    "result": "Fake (78.79%)",
-    "fake_probability": 0.34,
-    "gradcam_image": "C:\\Users\\qkdrk\\Desktop\\github\\DeepfakeHunters\\backend/data/results/images/gradcam_20251110_002016.png",
-    "pdf_path": "C:\\Users\\qkdrk\\Desktop\\github\\DeepfakeHunters\\backend/data/results/pdfs/heatmap_report_20251110_002016.pdf"
-}
