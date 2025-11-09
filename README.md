@@ -83,7 +83,8 @@ conda activate deepfakehunters
 (📁 위치: /backend/.env)
 
 ```bash
-DATABASE_URL=mysql+pymysql://root:1234@192.168.0.33:3306/deepfake_db
+DB_URL=mysql+pymysql://root:1234@192.168.0.33:3306/deepfake_db
+OPENAI_API_KEY=temp
 ```
 
 # 2 프런트엔드 환경 설정 (최초 1회)
@@ -96,13 +97,17 @@ npm install
 ```
 
 2️⃣ .env 파일 생성
-(📁 위치: /backend/.env)
+(📁 위치: ./frontend/.env)
 
 ```bash
 REACT_APP_API_URL=http://192.168.0.33:8000
 ```
 
-#### 이후 실행 순서 (매번 실행시)==========================================================================
+#### 이후 실행 순서 (매번 실행시)
+
+---
+
+---
 
 1️⃣ Docker Desktop 실행
 

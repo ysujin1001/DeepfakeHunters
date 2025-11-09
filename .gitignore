@@ -213,5 +213,5 @@ ai/old_photo_restoration/*.pth
 
 
 db/Mysql
-
 data/*
+frontend/package-lock.json

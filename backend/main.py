@@ -136,10 +136,10 @@ async def start_cleanup_task():
 
 if __name__ == "__main__":
     import uvicorn
-    print("🚀 FastAPI 서버 실행 중 (http://127.0.0.1:8001)")
+    print("🚀 FastAPI 서버 실행 중 (http://127.0.0.1:8000)")
     uvicorn.run(
         "main:app",          # 모듈:앱 경로
         host="0.0.0.0",              # 외부 접속 허용
-        port=8001,
+        port=8000,
         reload=True,                 # 코드 변경 시 자동 리로드
     )
