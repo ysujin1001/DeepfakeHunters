@@ -22,3 +22,4 @@ dependencies:
       - realesrgan
       - fpdf
       - langchain_openai
+      - facenet-pytorch

@@ -1,55 +1,86 @@
-import base64, io, os, datetime, json
+import io, os, base64, datetime, uuid, cv2, json
+from fastapi import UploadFile
+from PIL import Image, ImageOps
 from fpdf import FPDF
-from PIL import Image
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
-from dotenv import load_dotenv
-load_dotenv() 
 
+from config import config
+from backend.app.models.newtowk import mtcnn
+from ai.modules.Deepfake_Evaluation_MobileNet_v3_final_application_number_option import analyze_image_with_model_type
 
-# ==========================================================
-# 📁 1. 결과 저장 경로 설정
-# ==========================================================
-BASE_RESULT_DIR = os.path.join("data", "results")
-IMAGE_DIR = os.path.join(BASE_RESULT_DIR, "images")
-PDF_DIR = os.path.join(BASE_RESULT_DIR, "pdfs")
-LOG_DIR = os.path.join(BASE_RESULT_DIR, "logs")
+async def predict_fake(
+    file: UploadFile, model_type: str = "korean") -> dict:
+    # 디렉토리
+    base_dir = config['BASE_DIR']
+    upload_dir = f"{base_dir}/data/uploads"
+    os.makedirs(upload_dir, exist_ok=True)
+    
+    # 저장될 파일명
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    unique_id = uuid.uuid4().hex[:6]
+    ext = os.path.splitext(file.filename)[1]
+    safe_name = f"{timestamp}_{unique_id}{ext}"
+    save_path = f"{upload_dir}/{safe_name}"
 
-# 폴더 자동 생성
-for folder in [BASE_RESULT_DIR, IMAGE_DIR, PDF_DIR, LOG_DIR]:
-    os.makedirs(folder, exist_ok=True)
+    # 파일 저장
+    with open(save_path, "wb") as f:
+        f.write(await file.read())
+        
+    # 수정필요(현재는 모델 타입과 무관하게 mobilenetv3_deepfake_final 모델 하나만 사용중)
+    pred_label, confidence, report, gradcam_path, fake_intensity = analyze_image_with_model_type(
+        path=save_path,
+        model_type=model_type,
+        visualize=True,
+    )
 
-# ==========================================================
-# 🧠 2. 보고서 생성 함수
-# ==========================================================
-def generate_heatmap_report(result_data):
-    """
-    Grad-CAM 히트맵 분석 중심의 PDF 보고서 생성
-    result_data 예시:
-    {
-        "result": "Fake",
-        "fake_probability": 0.873,
-        "gradcam": "<base64>",
-        "model_type": "korean",
-        "model_name": "MobileNetV3-Small"
+    # ✅ Grad-CAM 이미지 base64 변환
+    gradcam_b64 = None
+    if gradcam_path and os.path.exists(gradcam_path):
+        with open(gradcam_path, "rb") as f:
+            gradcam_b64 = base64.b64encode(f.read()).decode("utf-8")
+
+    # ✅ 결과 반환
+    return {
+        "pred_label": pred_label,
+        "confidence": round(confidence, 2),
+        "report": report,
+        "gradcam": gradcam_b64,
+        "image_path": save_path,
+        "fake_probability": round(fake_intensity, 3) if fake_intensity else None,
+        "model_type":model_type
     }
-    """
 
-    # ------------------------------------------------------
-    # 1. Grad-CAM 이미지 저장
-    # ------------------------------------------------------
+
+async def generate_heatmap_report(request):
+    result = await request.json()
+    print("🧾 [REPORT INPUT] 수신된 JSON:", result.keys())
+
+    # ✅ 필수 필드 검증
+    required_fields = ["gradcam", "result", "fake_probability", "model_type"]
+    missing = [k for k in required_fields if k not in result]
+    if missing:
+        raise ValueError(f"필수 키 누락: {missing}")
+    result_data = result
+    
+    # 디렉토리
+    base_dir = config['BASE_DIR']
+    result_dir = f"{base_dir}/data/results"
+    image_dir = f"{result_dir}/images"
+    pdf_dir = f"{result_dir}/pdfs"
+    log_dir = f"{result_dir}/logs"
+    for data_dir in [image_dir, pdf_dir, log_dir]:
+        os.makedirs(data_dir, exist_ok=True)
+
+    # GradCAM 저장
     gradcam_b64 = result_data["gradcam"]
     gradcam_bytes = base64.b64decode(gradcam_b64)
     gradcam_img = Image.open(io.BytesIO(gradcam_bytes))
-
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     image_filename = f"gradcam_{timestamp}.png"
-    gradcam_path = os.path.join(IMAGE_DIR, image_filename)
+    gradcam_path = f"{image_dir}/{image_filename}"
     gradcam_img.save(gradcam_path)
 
-    # ------------------------------------------------------
-    # 2. LangChain LLM 프롬프트 구성 및 실행
-    # ------------------------------------------------------
     prompt = PromptTemplate(
         input_variables=["result", "prob", "type"],
         template=(
@@ -134,7 +165,7 @@ def generate_heatmap_report(result_data):
 
     # PDF 저장
     pdf_filename = f"heatmap_report_{timestamp}.pdf"
-    pdf_path = os.path.join(PDF_DIR, pdf_filename)
+    pdf_path = f"{pdf_dir}/{pdf_filename}"
     pdf.output(pdf_path)
 
     # ------------------------------------------------------
@@ -151,8 +182,44 @@ def generate_heatmap_report(result_data):
     }
 
     log_filename = f"report_log_{timestamp}.json"
-    with open(os.path.join(LOG_DIR, log_filename), "w", encoding="utf-8") as f:
+    with open(f"{log_dir}/{log_filename}", "w", encoding="utf-8") as f:
         json.dump(log_data, f, indent=4, ensure_ascii=False)
 
     # 최종 PDF 경로 반환
     return pdf_path
+
+# 미구현
+async def face_detect(file):
+    base_dir = config['BASE_DIR']
+    output_dir = f"{base_dir}/cropped_faces"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    cv_img = cv2.imread(file)
+    cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+    img = Image.fromarray(cv_img)
+    width, height = img.size
+
+    boxes, probs = mtcnn.detect(img)
+    if boxes is None:
+        print(f"\n❌ 얼굴 미검출: {file}")
+
+    for i, (box, prob) in enumerate(zip(boxes, probs)):
+        if prob < 0.9:
+            continue
+
+        x1, y1, x2, y2 = box
+        w, h = x2 - x1, y2 - y1
+        margin = 0.2
+        x1 = max(0, int(x1 - w * margin / 2))
+        y1 = max(0, int(y1 - h * margin / 2))
+        x2 = min(width, int(x2 + w * margin / 2))
+        y2 = min(height, int(y2 + h * margin / 2))
+
+        face = img.crop((x1, y1, x2, y2))
+        face.thumbnail((224, 224), Image.BICUBIC)
+        face = ImageOps.pad(face, (224, 224), color=(0, 0, 0))
+
+        out_name = f"{os.path.splitext(file)[0]}_face{i+1}.jpg"
+        out_path = f"{output_dir}/{out_name}"
+        face.save(out_path, format="JPEG", quality=95)
+    return out_path
