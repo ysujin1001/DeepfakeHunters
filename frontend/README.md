@@ -26,7 +26,7 @@ npm run start
    │   ├─ pages/
    │   ├─ components/
    │   ├─ styles/
-   │   └─ lib/
+   │   └─ api/
    └─ package.json
 
 # 7. 서버 구조
